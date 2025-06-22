@@ -31,7 +31,7 @@ De gebruikte extra materialen zijn:
 - [2x m3 schroefjes](https://www.tinytronics.nl/nl/gereedschap-en-montage/installatie-en-montagemateriaal/bouten/bout-m3-5mm-draad-100-stuks)
 - [2x neodymium magneetjes](https://www.tinytronics.nl/nl/gereedschap-en-montage/installatie-en-montagemateriaal/magneten/xmp-neodymium-magneet-10x2mm-n35)
 
-#### Bedankje:
+.
 > [!NOTE]
 > Deze code is gebaseerd op het fantistische werk van Superduper1969. :+1:
 > [Lilygo repository](https://github.com/fonske/MarstekVenus-LilygoRS485/tree/main?tab=readme-ov-file)
