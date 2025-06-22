@@ -2,7 +2,7 @@
 Readout and control of Marstek Venus plugin battery with M5stack RS485 base (Atom S3 lite)
 
 
-![image](https://github.com/user-attachments/assets/343db925-dc42-4a91-88b5-51ac631e3bb0)
+![image]([https://github.com/user-attachments/assets/343db925-dc42-4a91-88b5-51ac631e3bb0](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/m5stack_RS485_base_Atom_S3_lite.jpg))
 
 Om de M5stack RS485 base te kunnen gebruiken op de Marstek Venus E, gevoed via de modbus connector, dient de er op de PCB een aanpassing gemaakt te worden dmv een gesoldeerde draadbrug.
 Deze draadbrug bypassed the DC buck converter, die er origineel een te lage spanning van maakt (4,5 Vdc). Hierdoor zal de Marstek batterij telkens rebooten.
