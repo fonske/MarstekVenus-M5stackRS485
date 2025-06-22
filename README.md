@@ -1,5 +1,5 @@
 # MarstekVenus-M5stackRS485
-Readout and control of Marstek Venus plugin battery with M5stack RS485 base (Atom S3 lite)
+Modbus uitlezing en controle van een Marstek Venus plugin battery met M5stack RS485 base (+ Atom S3 lite)
 
 
 ![image](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/m5stack_RS485_base_Atom_S3_lite.jpg)
