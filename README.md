@@ -13,13 +13,8 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 ![image](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/modify_pcb_for_5v.jpg)
 
 > [!WARNING]
-> Standaard is dus de RS485 base van m5stack dus niet te gebruiken zonder deze aanpassing!
+> Standaard is de RS485 base van m5stack dus niet te gebruiken zonder deze aanpassing!
 
-Ik wil hier nog wat zeggen:
-* blablabla
-* blablabla.
-* blablabla.
-* blablabla.
 
 Ontwikkkeling:
 * 22-06-2025 - Eerste versie van de documentatie.
