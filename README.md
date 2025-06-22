@@ -21,7 +21,7 @@ Ontwikkkeling:
 
 
 Magneethouder voor m5stack rs485 base:
-Deze is [hier](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/3d_print/base_485_magnet_m5_marstek.stl) te downloaden.
+Het 3Dprint stl bestand is [hier](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/3d_print/base_485_magnet_m5_marstek.stl) te downloaden.
 
 
 De gebruikte extra materialen zijn:
