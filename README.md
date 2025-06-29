@@ -31,8 +31,8 @@ De gebruikte extra materialen zijn:
 - [2x m3 schroefjes](https://www.tinytronics.nl/nl/gereedschap-en-montage/installatie-en-montagemateriaal/bouten/bout-m3-5mm-draad-100-stuks)
 - [2x neodymium magneetjes](https://www.tinytronics.nl/nl/gereedschap-en-montage/installatie-en-montagemateriaal/magneten/xmp-neodymium-magneet-10x2mm-n35)
 
-  ## Contact
-  Purchase: alphonsuijtdehaag at gmail dot com, if you are interested in a complete set with M5Stack Atom s3 lite
+#### Contact
+Purchase: alphonsuijtdehaag at gmail dot com, if you are interested in a complete set with M5Stack Atom s3 lite
 .
 > [!NOTE]
 > Deze code is gebaseerd op het fantistische werk van Superduper1969. :+1:
