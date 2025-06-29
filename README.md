@@ -21,7 +21,7 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 * 22-06-2025 - Eerste versie van de documentatie.
 
 #### Magneethouder:
-Magneethouder voor m5stack rs485 base:
+[Magneethouder](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/magnet_holder.jpg) voor m5stack rs485 base:
 Het 3Dprint stl bestand is [hier](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/3d_print/base_485_magnet_m5_marstek.stl) te downloaden.
 
 #### Gebruikte materialen:
