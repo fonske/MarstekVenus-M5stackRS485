@@ -33,6 +33,7 @@ De gebruikte extra materialen zijn:
 
 #### Contact
 Purchase: alphonsuijtdehaag at gmail dot com, if you are interested in a complete set with M5Stack Atom s3 lite
+
 .
 > [!NOTE]
 > Deze code is gebaseerd op het fantistische werk van Superduper1969. :+1:
