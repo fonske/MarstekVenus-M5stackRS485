@@ -488,7 +488,23 @@ sensor:
 #    object:
 #      name: Object
 #    icon: mdi:thermometer
-      
+
+  - name: "Battery Wifi Signal Strength"
+    id: battery_wifi_signal_strenght
+    icon: mdi:wifi
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30303
+    value_type: U_WORD
+    unit_of_measurement: "dBm"
+    filters:
+      - multiply: -1
+    accuracy_decimals: 0   
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 7
+            
   - platform: modbus_controller
     id: inverter_state  # No name, since it's internal
     icon: mdi:state-machine
@@ -689,7 +705,7 @@ sensor:
 #      - multiply: 0.1
 #    web_server:
 #      sorting_group_id: Info
-#      sorting_weight: 24
+#      sorting_weight: 26
 
 #  - name: "AC Offgrid Current"
 #    icon: mdi:current-ac
@@ -706,7 +722,7 @@ sensor:
 #      - multiply: 0.01
 #    web_server:
 #      sorting_group_id: Info
-#      sorting_weight: 25
+#      sorting_weight: 27
 
 #  - name: "AC Offgrid Power"
 #    icon: mdi:flash
@@ -722,7 +738,61 @@ sensor:
 #    accuracy_decimals: 0
 #    web_server:
 #      sorting_group_id: Info
-#      sorting_weight: 23
+#      sorting_weight: 28
+
+  - name: "Maximum Cell Voltage"
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 37007
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 2
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    id: marstek_max_cell_voltage
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 24
+
+  - name: "Minimum Cell Voltage"
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 37008
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 2
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    id: marstek_min_cell_voltage
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 25
+
+  - platform: template
+    name: "Cell Voltage Delta"
+    icon: mdi:sine-wave
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    lambda: |-
+      if (isnan(id(marstek_max_cell_voltage).state) || isnan(id(marstek_min_cell_voltage).state)) {
+        return NAN;
+      }
+      return id(marstek_max_cell_voltage).state - id(marstek_min_cell_voltage).state;
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 26
 
   - name: "Total Charging Energy"
     id: total_charging_energy
