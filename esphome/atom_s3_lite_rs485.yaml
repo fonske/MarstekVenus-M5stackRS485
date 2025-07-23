@@ -504,7 +504,7 @@ sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 7
-            
+
   - platform: modbus_controller
     id: inverter_state  # No name, since it's internal
     icon: mdi:state-machine
@@ -749,7 +749,7 @@ sensor:
     value_type: U_WORD
     unit_of_measurement: "V"
     device_class: voltage
-    accuracy_decimals: 2
+    accuracy_decimals: 3
     state_class: measurement
     filters:
       - multiply: 0.001
@@ -768,7 +768,7 @@ sensor:
     value_type: U_WORD
     unit_of_measurement: "V"
     device_class: voltage
-    accuracy_decimals: 2
+    accuracy_decimals: 3
     state_class: measurement
     filters:
       - multiply: 0.001
