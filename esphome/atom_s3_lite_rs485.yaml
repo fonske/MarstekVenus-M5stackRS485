@@ -5,15 +5,15 @@ substitutions:
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-  min_version: 2024.11.0
+  min_version: 2025.7.0
   name_add_mac_suffix: false
 
 esp32:
-  board: esp32-s3-devkitc-1  ## Atom S3 lite  
+  board: esp32-s3-devkitc-1  ## M5stack Atom S3 lite  
   flash_size: 8MB
   framework:
     type: esp-idf
-    version: recommended
+    version: 5.3.1  # version: 5.3.2 <recommended> gives error
     # Custom sdkconfig options
     sdkconfig_options:
       COMPILER_OPTIMIZATION_SIZE: y
@@ -37,11 +37,17 @@ logger:
 api:
   reboot_timeout: 0s
 #  encryption:
-#    key: "1234omzUmVcVvuKfJaWBNIfuj/G3G3KvFGgQbkS5xXk="
+#    key: !secret api_encryption_key
+
+# enable ota update via http request
+http_request:
+  buffer_size_tx: 20248
 
 ota:
   - platform: esphome
-#  password: "1234cea993cfbca3d9d808f9349cbbb0"
+  - platform: http_request
+  - platform: web_server
+#  password: !secret ota_password
 
 wifi:
   ssid: !secret wifi_ssid
@@ -68,9 +74,9 @@ captive_portal:
 web_server:
   port: 80
   version: 3
-  include_internal: true
-  ota: false
-  local: true
+  include_internal: True
+#  ota: False
+  local: True
   sorting_groups:
     - id: Info
       name: "Info"
@@ -110,7 +116,7 @@ web_server:
 #    turn_off_action:
 #      - ble_client.disconnect: marstek_mt1_ble
 
-## Configure i2c (port on atom s3)
+## Configure i2c (grove port on atom s3)
 i2c:
   - id: bus_a
     sda: GPIO2
@@ -468,7 +474,7 @@ binary_sensor:
         - script.stop: adjust_brightness_loop
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 10
+      sorting_weight: 13
 
 ## Sensoren
 sensor:
@@ -479,7 +485,7 @@ sensor:
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 10
+      sorting_weight: 12
 
 ## NCIR thermometer sensor M5stack U028
 #  - platform: mlx90614
@@ -517,19 +523,47 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 30
 
-  - name: "Firmware Version"
-    id: firmware_version
+  - name: "Software Version"
+    id: software_version
     icon: mdi:factory
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
     address: 31100
     value_type: U_WORD
-    accuracy_decimals: 2
+    accuracy_decimals: 0
     skip_updates: 60 # 5 minutes
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 8
+
+  - name: "Firmware Version"
+    id: firmware_version
+    icon: mdi:factory
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 31101
+    value_type: U_WORD
+    accuracy_decimals: 0
+    skip_updates: 60 # 5 minutes
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 9
+
+  - name: "BMS Version"
+    id: bms_version
+    icon: mdi:factory
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 31102
+    value_type: U_WORD
+    accuracy_decimals: 0
+    skip_updates: 60 # 5 minutes
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 10
 
   - name: "Battery Voltage (Average)"
     id: battery_voltage_average
