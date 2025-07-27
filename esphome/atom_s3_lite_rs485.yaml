@@ -71,7 +71,7 @@ captive_portal:
 web_server:
   port: 80
   version: 3
-  include_internal: True
+  include_internal: False
 #  ota: False
   local: True
   sorting_groups:
@@ -88,7 +88,7 @@ web_server:
       name: "Diagnostic"
       sorting_weight: -10
 
-## Configure i2c (grove port on atom s3)
+## Configure i2c (grove port on Atom S3)
 i2c:
   - id: bus_a
     sda: GPIO2
@@ -219,6 +219,100 @@ text_sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 2
+
+  - platform: modbus_controller
+    id: wifi_status
+    name: "Wifi status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30300
+    raw_encode: NONE
+    icon: mdi:wifi-alert
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Disconnected"; break;
+        case 1:  mode_str = "Connected"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 20
+
+  - platform: modbus_controller
+    id: bt_status
+    name: "BT status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30301
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Off"; break;
+        case 1:  mode_str = "Active after boot"; break;    
+        case 2:  mode_str = "Connected"; break; 
+        case 3:  mode_str = "Active"; break;                                                           
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 21
+
+  - platform: modbus_controller
+    id: cloud_status
+    name: "Cloud status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30302
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Disconnected"; break;
+        case 1:  mode_str = "Connected"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 22
+
+  - platform: modbus_controller
+    id: power_restriction_discharge
+    name: "Power restriction"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 41010
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Off"; break;
+        case 1:  mode_str = "800W limited"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 23
 
 # Binaire sensoren
 binary_sensor:
@@ -437,15 +531,6 @@ binary_sensor:
     register_type: holding
     address: 36101
     bitmask: 0x32
-
-  - platform: status
-    name: "WiFi Status"
-    icon: mdi:wifi-alert
-    id: wifi_status
-    entity_category: diagnostic
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 1
 
 ## Push button on top of Atom S3 lite
 ## Short push = led On or Off
