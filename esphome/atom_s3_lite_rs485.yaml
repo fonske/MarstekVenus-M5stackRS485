@@ -123,18 +123,50 @@ modbus_controller:
 
 # Tekstsensoren
 text_sensor:
-  - name: "Device Name"
+  - platform: modbus_controller
+    name: "Device Name"
     icon: mdi:rename-outline
-    platform: modbus_controller
+    id: device_name
     modbus_controller_id: mt
     register_type: holding
     address: 31000
     register_count: 10
     response_size: 20
     skip_updates: 60 # 5 minutes
+    entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 7
+
+  - platform: template
+    name: "Software Version"
+    id: software_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 8
+
+  - platform: template
+    name: "Firmware Version"
+    id: firmware_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 9
+
+  - platform: template
+    name: "BMS Version"
+    id: bms_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 10
 
   # - name: "SN Code"
   #   platform: modbus_controller
@@ -483,6 +515,20 @@ sensor:
       sorting_group_id: Diagnostic
       sorting_weight: 7
 
+  - platform: copy # Reports the Battery signal strength in %
+    source_id: battery_wifi_signal_strenght
+    name: Battery Wifi signal
+    id: battery_wifi_signal_proc
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: " %"
+    entity_category: diagnostic
+    device_class: ""
+    icon: mdi:wifi
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 6
+
   - platform: modbus_controller
     id: inverter_state  # No name, since it's internal
     icon: mdi:state-machine
@@ -495,47 +541,59 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 30
 
-  - name: "Software Version"
-    id: software_version
+  - platform: modbus_controller
+    id: software_version # No name, since it's internal
     icon: mdi:factory
-    platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
     address: 31100
     value_type: U_WORD
     accuracy_decimals: 0
     skip_updates: 60 # 5 minutes
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 8
+    internal: true # Hides from Home Assistant
+    on_value:
+      then:
+        - lambda: |-
+            int version = (int)x;
+            char buf[5];
+            sprintf(buf, "V%d", version);
+            id(software_version_text).publish_state(buf);
 
-  - name: "Firmware Version"
-    id: firmware_version
+  - platform: modbus_controller
+    id: firmware_version # No name, since it's internal
     icon: mdi:factory
-    platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
     address: 31101
     value_type: U_WORD
     accuracy_decimals: 0
     skip_updates: 60 # 5 minutes
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 9
+    internal: true # Hides from Home Assistant
+    on_value:
+      then:
+        - lambda: |-
+            int version = (int)x;
+            char buf[5];
+            sprintf(buf, "V%d", version);
+            id(firmware_version_text).publish_state(buf);
 
-  - name: "BMS Version"
+  - platform: modbus_controller
     id: bms_version
     icon: mdi:factory
-    platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
     address: 31102
     value_type: U_WORD
     accuracy_decimals: 0
     skip_updates: 60 # 5 minutes
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 10
+    internal: true
+    on_value:
+      then:
+        - lambda: |-
+            int version = (int)x;
+            char buf[5];
+            sprintf(buf, "V%d", version);
+            id(bms_version_text).publish_state(buf);
 
   - name: "Battery Voltage (Average)"
     id: battery_voltage_average
@@ -1065,7 +1123,7 @@ sensor:
       sorting_weight: 18
 
   - platform: wifi_signal
-    name: "WiFi Signal Strength"
+    name: "ESP WiFi Signal Strength"
     icon: mdi:wifi
     id: wifi_strength
     update_interval: 30s
@@ -1076,7 +1134,7 @@ sensor:
 
   - platform: copy # Reports the WiFi signal strength in %
     source_id: wifi_strength
-    name: Wifi signal
+    name: ESP Wifi signal
     id: wifi_signal_proc
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
@@ -1100,7 +1158,7 @@ sensor:
     internal: true # Hides from Home Assistant
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 6
+      sorting_weight: 15
 
 # Instellingen en modi (Select en Number)
 select:
