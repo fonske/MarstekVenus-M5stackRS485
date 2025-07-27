@@ -2,6 +2,7 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
+## Version 1.1
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -13,8 +14,8 @@ esp32:
   flash_size: 8MB
   framework:
     type: esp-idf
-    version: 5.3.1  # version: 5.3.2 <recommended> gives error
-    # Custom sdkconfig options
+    version: 5.3.1  ## version: 5.3.2 <recommended> gives error
+    ## Custom sdkconfig options
     sdkconfig_options:
       COMPILER_OPTIMIZATION_SIZE: y
       CONFIG_BT_ENABLED: n
@@ -39,13 +40,9 @@ api:
 #  encryption:
 #    key: !secret api_encryption_key
 
-# enable ota update via http request
-http_request:
-  buffer_size_tx: 20248
-
+## Enable OTA updates
 ota:
   - platform: esphome
-  - platform: http_request
   - platform: web_server
 #  password: !secret ota_password
 
@@ -90,31 +87,6 @@ web_server:
     - id: Diagnostic
       name: "Diagnostic"
       sorting_weight: -10
-
-## Enable Bluetooth Low Energy (BLE)
-## Optional: bluetooth tracker and proxy
-#esp32_ble_tracker:
-#  scan_parameters:
-#    interval: 1100ms
-#    window: 1100ms
-#    active: true
-
-#bluetooth_proxy:
-#  active: true
-
-#ble_client:
-#  - mac_address: "24:19:72:0d:2a:2f"  #find your Marstek bluetooth mac addres first!
-#    id: marstek_mt1_ble
-
-#switch:  # to keep the bluetooth connected, so no other can connect to your marstek
-#  - platform: template
-#    name: "BLE Connect"
-#    id: marstek_ble_switch
-#    optimistic: true
-#    turn_on_action:
-#      - ble_client.connect: marstek_mt1_ble
-#    turn_off_action:
-#      - ble_client.disconnect: marstek_mt1_ble
 
 ## Configure i2c (grove port on atom s3)
 i2c:
