@@ -204,7 +204,7 @@ text_sensor:
         sorting_group_id: Diagnostic
         sorting_weight: 4
     ssid:
-      name: ESP SIDD
+      name: ESP SSID
       icon: mdi:wifi
       web_server:
         sorting_group_id: Diagnostic
