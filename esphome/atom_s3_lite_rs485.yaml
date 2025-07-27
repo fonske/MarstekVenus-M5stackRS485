@@ -447,9 +447,9 @@ binary_sensor:
       sorting_group_id: Diagnostic
       sorting_weight: 1
 
-## Push button Atom S3 lite
-## Kort indrukken = led aan of uit
-## Lang indrukken = brightness veranderen
+## Push button on top of Atom S3 lite
+## Short push = led On or Off
+## Long push = led brightness changes
   - platform: gpio
     pin:
       number: GPIO41
