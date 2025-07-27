@@ -38,13 +38,13 @@ logger:
 api:
   reboot_timeout: 0s
 #  encryption:
-#    key: !secret api_encryption_key
+#    key: !secret marstek_m1_api_encryption_key
 
 ## Enable OTA updates
 ota:
   - platform: esphome
   - platform: web_server
-#  password: !secret ota_password
+#  password: !secret marstek_m1_ota_password
 
 wifi:
   ssid: !secret wifi_ssid
