@@ -20,7 +20,7 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 #### Ontwikkkeling:
 * 22-06-2025 - Eerste versie van de documentatie.
 * 27-07-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.1. OTA webserver en esphome v2025.7.0
-* 27-07-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
+* 09-08-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
 
 #### Magneethouder:
 [Magneethouder](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/magnet_holder.jpg) voor m5stack rs485 base:
