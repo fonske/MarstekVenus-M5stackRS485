@@ -606,7 +606,7 @@ sensor:
     id: battery_wifi_signal_proc
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
-    unit_of_measurement: " %"
+    unit_of_measurement: "%"
     entity_category: diagnostic
     device_class: ""
     icon: mdi:wifi
@@ -1262,7 +1262,7 @@ sensor:
     id: wifi_signal_proc
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
-    unit_of_measurement: " %"
+    unit_of_measurement: "%"
     entity_category: diagnostic
     device_class: ""
     icon: mdi:wifi
