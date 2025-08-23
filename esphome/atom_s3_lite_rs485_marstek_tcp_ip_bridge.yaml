@@ -189,9 +189,7 @@ sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 5
-###############################################################################
-## STATUS LED
-###############################################################################
+
 ## Simple status led for Atom s3 (lite)
 ## G35=RGB WS2812C-2020
 ##
