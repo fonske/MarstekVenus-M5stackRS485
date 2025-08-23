@@ -1,5 +1,5 @@
 substitutions:
-  name: marstek_m1
+  name: marstek-m1
   friendly_name: MT1
 
 ## Version 1.2 - changed scale cell min max temp from BMS V2.15 /see R-1156

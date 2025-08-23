@@ -1,7 +1,7 @@
 # based on Atom S3 display with RS485 Base - 5V shortcut wire soldered on back PCB from +5V to +24V
 esphome:
-  name: marstek_m1
-  friendly_name: My Battery
+  name: marstek-m1
+  friendly_name: MT1
   min_version: 2024.11.0
   name_add_mac_suffix: false
 

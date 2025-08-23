@@ -8,6 +8,8 @@ esphome:
   friendly_name: ${friendly_name}
   min_version: 2025.7.0
   name_add_mac_suffix: false
+  platformio_options:
+    board_build.flash_mode: dio
 
 esp32:
   board: esp32-s3-devkitc-1  ## M5stack Atom S3 lite  
@@ -84,14 +86,18 @@ web_server:
 ## Configure i2c (grove port on Atom S3)
 i2c:
   - id: bus_a
-    sda: GPIO2
-    scl: GPIO1
+    sda: 
+      number: GPIO2
+    scl: 
+      number: GPIO1
 
 ## Configure UART
 uart:
   - id: mod_bus
-    tx_pin: GPIO6
-    rx_pin: GPIO5
+    tx_pin:
+      number: GPIO6
+    rx_pin:
+      number: GPIO5
     baud_rate: 115200
     data_bits: 8
     stop_bits: 1
@@ -148,8 +154,41 @@ text_sensor:
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 3
+      sorting_weight: 6
 
+sensor:
+  - platform: internal_temperature
+    icon: mdi:thermometer
+    name: "Atom temperature"
+    update_interval: 30s
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 7
+
+  - platform: wifi_signal
+    name: "ESP WiFi Signal Strength"
+    icon: mdi:wifi
+    id: wifi_strength
+    update_interval: 30s
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 4
+
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_strength
+    name: ESP Wifi signal
+    id: wifi_signal_proc
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: diagnostic
+    device_class: ""
+    icon: mdi:wifi
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 5
 ###############################################################################
 ## STATUS LED
 ###############################################################################
