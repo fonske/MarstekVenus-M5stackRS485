@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
-## Version 1.0 
+## Version 1.3
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
