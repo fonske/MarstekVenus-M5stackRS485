@@ -41,7 +41,7 @@ meters:
     port: 502 # Port
     capacity: 5.12 # Battery capacity (kWh), Venus-E 5.12 kWh, Venus-C 2.56 kWh (optional)
 ```
-Opm: [combinatie](atom_s3_lite_rs485_tcp_ip.yaml) van modbus rtu en tcp/ip met EVCC is nog niet geheel stabiel te noemen. Evcc Power battery heeft uitschieters en Evcc Battery SOC gaat soms naar 0%
+Opm: [combinatie](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip.yaml) van modbus rtu en tcp/ip met EVCC is nog niet geheel stabiel te noemen. Evcc Power battery heeft uitschieters en Evcc Battery SOC gaat soms naar 0%
 Advies is om dan enkel de modbus_bridge_only te gebruiken bij gebruik van evcc.
 
 #### Magneethouder:
