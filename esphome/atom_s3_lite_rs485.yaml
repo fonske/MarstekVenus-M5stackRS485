@@ -2,14 +2,12 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
-## Version 1.3
+## Version 1.2 - changed scale cell min max temp from BMS V2.15 /see R-1156
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
   min_version: 2025.7.0
   name_add_mac_suffix: false
-  platformio_options:
-    board_build.flash_mode: dio
 
 esp32:
   board: esp32-s3-devkitc-1  ## M5stack Atom S3 lite  
@@ -22,13 +20,6 @@ esp32:
       COMPILER_OPTIMIZATION_SIZE: y
       CONFIG_BT_ENABLED: n
 
-## Modbus TCP/IP external component
-external_components:
-  - source:
-      type: git
-      url: https://github.com/rosenrot00/esphome_modbus_bridge
-    components: [modbus_bridge]
-
 ## Enable/Disable logging
 logger:
   logs:
@@ -36,8 +27,12 @@ logger:
     modbus_controller.output: INFO
     modbus.number: INFO
     esp32.preferences: INFO
-    light: INFO
+    sensor: DEBUG
+    text_sensor: DEBUG
+    button: DEBUG
+    number: DEBUG
     component: ERROR
+    ble_client: DEBUG
   
 ## Enable Home Assistant API
 api:
@@ -77,6 +72,7 @@ web_server:
   port: 80
   version: 3
   include_internal: False
+#  ota: False
   local: True
   sorting_groups:
     - id: Info
@@ -95,33 +91,18 @@ web_server:
 ## Configure i2c (grove port on Atom S3)
 i2c:
   - id: bus_a
-    sda: 
-      number: GPIO2
-    scl: 
-      number: GPIO1
+    sda: GPIO2
+    scl: GPIO1
 
 ## Configure UART
 uart:
   - id: mod_bus
-    tx_pin:
-      number: GPIO6
-    rx_pin:
-      number: GPIO5
+    tx_pin: GPIO6
+    rx_pin: GPIO5
     baud_rate: 115200
     data_bits: 8
     stop_bits: 1
     parity: NONE
-    rx_buffer_size: 256         # min. 256 recommended; increase for very long RTU responses
-
-## Configure MODBUS TCP/IP bridge
-modbus_bridge:
-  id: mb_bridge
-  uart_id: mod_bus
-  tcp_port: 502               # TCP port
-  tcp_poll_interval: 50       # ms between TCP polls
-  tcp_client_timeout: 60000   # ms inactivity until TCP client is disconnected
-  tcp_allowed_clients: 4      # clamped to minimum 1, use with care as it increases memory usage
-  rtu_response_timeout: 3000  # ms, clamped internally to minimum of 10 ms)
 
 modbus:
   - uart_id: mod_bus
@@ -135,27 +116,456 @@ modbus_controller:
     command_throttle: 20ms
     update_interval: 2s
 
-## Configure Debug Switch (Webserver debug window)
-switch:
+##G4=IR
+#remote_transmitter:
+#  pin: GPIO4
+#  carrier_duty_percent: 50%
+
+# Tekstsensoren
+text_sensor:
+  - platform: modbus_controller
+    name: "Device Name"
+    icon: mdi:rename-outline
+    id: device_name
+    modbus_controller_id: mt
+    register_type: holding
+    address: 31000
+    register_count: 10
+    response_size: 20
+    skip_updates: 60 # 5 minutes
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 7
+
   - platform: template
-    name: "Modbus TCP/IP Bridge Debug"
-    id: modbus_debug_switch
-    icon: mdi:file-document-check-outline
-    restore_mode: RESTORE_DEFAULT_OFF  # debug disabled by default; persists across reboots
-    turn_on_action:
-      - lambda: |-
-          id(mb_bridge).set_debug(true);
-          id(modbus_debug_switch).publish_state(true);
-    turn_off_action:
-      - lambda: |-
-          id(mb_bridge).set_debug(false);
-          id(modbus_debug_switch).publish_state(false);
+    name: "Software Version"
+    id: software_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 8
 
-## Sensor
+  - platform: template
+    name: "Firmware Version"
+    id: firmware_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 9
+
+  - platform: template
+    name: "BMS Version"
+    id: bms_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 10
+
+  # - name: "SN Code"
+  #   platform: modbus_controller
+  #   modbus_controller_id: mt
+  #   register_type: holding
+  #   address: 31200
+  #   register_count: 10
+  #   response_size: 20
+  #   skip_updates: 60 # 5 minutes
+
+  - platform: template
+    name: "Inverter State"
+    icon: mdi:state-machine
+    lambda: |-
+      switch (int(id(inverter_state).state)) {
+        case 0: return std::string("Sleep");
+        case 1: return std::string("Standby");
+        case 2: return std::string("Charge");
+        case 3: return std::string("Discharge");
+        case 4: return std::string("Fault");
+        case 5: return std::string("Idle");
+        case 6: return std::string("AC bypass");
+        default: return std::string("Unknown");
+      };
+    update_interval: 5s
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 4
+
+  - platform: wifi_info
+    ip_address:
+      name: ESP IP
+      icon: mdi:ip
+      web_server:
+        sorting_group_id: Diagnostic
+        sorting_weight: 4
+    ssid:
+      name: ESP SSID
+      icon: mdi:wifi
+      web_server:
+        sorting_group_id: Diagnostic
+        sorting_weight: 3
+
+  - platform: version
+    name: ESP Version
+    hide_timestamp: true
+    disabled_by_default: false
+    icon: mdi:new-box
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 2
+
+  - platform: modbus_controller
+    id: wifi_status
+    name: "Wifi status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30300
+    raw_encode: NONE
+    icon: mdi:wifi-alert
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Disconnected"; break;
+        case 1:  mode_str = "Connected"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 20
+
+  - platform: modbus_controller
+    id: bt_status
+    name: "BT status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30301
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Off"; break;
+        case 1:  mode_str = "Active after boot"; break;    
+        case 2:  mode_str = "Connected"; break; 
+        case 3:  mode_str = "Active"; break;                                                           
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 21
+
+  - platform: modbus_controller
+    id: cloud_status
+    name: "Cloud status"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30302
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Disconnected"; break;
+        case 1:  mode_str = "Connected"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 22
+
+  - platform: modbus_controller
+    id: power_restriction_discharge
+    name: "Power restriction"
+    modbus_controller_id: mt
+    register_type: holding
+    address: 41010
+    raw_encode: NONE
+    icon: mdi:home-heart
+    entity_category: diagnostic
+    skip_updates: 20
+    lambda: |-
+      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
+      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
+      std::string mode_str;
+      switch (int_mode) {
+        case 0:  mode_str = "Off"; break;
+        case 1:  mode_str = "800W limited"; break;                                                              
+      }
+      return mode_str;
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 23
+
+# Binaire sensoren
+binary_sensor:
+  - platform: modbus_controller
+    name: "PLL Abnormal Restart"
+    icon: mdi:flash-triangle
+    id: pll_abnormal_restart
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x01
+
+  - platform: modbus_controller
+    name: "Overtemperature Limit"
+    icon: mdi:thermometer-alert
+    id: overtemperature_limit
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x02
+
+  - platform: modbus_controller
+    name: "Low Temperature Limit"
+    icon: mdi:thermometer-alert
+    id: low_overtemperature_limit
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x04
+
+  - platform: modbus_controller
+    name: "Fan Abnormal Warning"
+    icon: mdi:fan-alert
+    id: fan_abnormal_warning
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x08
+
+  - platform: modbus_controller
+    name: "Low Battery SOC Warning"
+    icon: mdi:battery-off-outline
+    id: low_battery_soc_warning
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x16
+
+  - platform: modbus_controller
+    name: "Output Overcurrent Warning"
+    icon: mdi:flash-triangle
+    id: output_overcurrent_warning
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x32
+
+  - platform: modbus_controller
+    name: "Abnormal Line Sequence Detection"
+    icon: mdi:flash-triangle
+    id: abnormal_line_sequence_detection
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36000
+    bitmask: 0x64
+
+  - platform: modbus_controller
+    name: "Wifi Abnormal"
+    icon: mdi:wifi-alert
+    id: wifi_abnormal
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36001
+    bitmask: 0x01
+
+  - platform: modbus_controller
+    name: "BLE abnormal"
+    icon: mdi:bluetooth-off
+    id: ble_abnormal
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36001
+    bitmask: 0x02
+
+  - platform: modbus_controller
+    name: "Network abnormal"
+    icon: mdi:network-off
+    id: network_abnormal
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36001
+    bitmask: 0x04
+
+  - platform: modbus_controller
+    name: "CT connection abnormal"
+    icon: mdi:robot-vacuum-alert
+    id: ct_connection_abnormal
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36001
+    bitmask: 0x08
+
+  - platform: modbus_controller
+    name: "Grid overvoltage"
+    icon: mdi:flash-triangle
+    id: grid_overvoltage
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x01
+
+  - platform: modbus_controller
+    name: "Grid undervoltage"
+    icon: mdi:flash-triangle-outline
+    id: grid_undervoltage
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x02
+
+  - platform: modbus_controller
+    icon: mdi:flash-triangle
+    name: "Grid overfrequency"
+    id: grid_overfrequency
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x04
+
+  - platform: modbus_controller
+    name: "Grid underfrequency"
+    icon: mdi:flash-triangle
+    id: grid_underfrequency
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x08
+
+  - platform: modbus_controller
+    name: "Grid peak voltage abnormal"
+    icon: mdi:alert-plus
+    id: grid_peak_voltage_abnormal
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x16
+
+  - platform: modbus_controller
+    name: "Current Dcover"
+    icon: mdi:flash-triangle
+    id: current_dcover
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x32
+
+  - platform: modbus_controller
+    name: "Voltage Dcover"
+    icon: mdi:flash-triangle
+    id: voltage_dcover
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36100
+    bitmask: 0x64
+
+  - platform: modbus_controller
+    name: "BAT overvoltage"
+    icon: mdi:flash-triangle
+    id: bat_overvoltage
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x01
+
+  - platform: modbus_controller
+    name: "BAT undervoltage"
+    icon: mdi:flash-triangle-outline
+    id: bat_undervoltage
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x02
+
+  - platform: modbus_controller
+    name: "BAT overcurrent"
+    icon: mdi:wave-undercurrent
+    id: bat_overcurrent
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x04
+
+  - platform: modbus_controller
+    name: "BAT low SOC"
+    icon: mdi:battery-off-outline
+    id: bat_low_soc
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x08
+
+  - platform: modbus_controller
+    name: "BAT communication failure"
+    icon: mdi:flash-triangle
+    id: bat_communication_failure
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x16
+
+  - platform: modbus_controller
+    name: "BMS protect"
+    icon: mdi:flash-triangle
+    id: bms_protect
+    modbus_controller_id: mt
+    register_type: holding
+    address: 36101
+    bitmask: 0x32
+
+## Push button on top of Atom S3 lite
+## Short push = led On or Off
+## Long push = led brightness changes
+  - platform: gpio
+    pin:
+      number: GPIO41
+      inverted: true
+      mode: INPUT_PULLUP
+    name: "Brightness Button"
+    id: brightness_button
+    internal: true
+    icon: mdi:brightness-6
+    on_multi_click:
+      - timing:
+          - ON for at least 1s
+        then:
+          - logger.log: "Lange druk gedetecteerd - start helderheid aanpassen"
+          - script.execute: adjust_brightness_loop
+
+      - timing:
+          - ON for at most 700ms
+          - OFF for at least 50ms
+        then:
+          - logger.log: "Korte druk - toggle LED"
+          - light.toggle: status_led
+
+    on_release:
+      then:
+        - script.stop: adjust_brightness_loop
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 13
+
+## Sensoren
 sensor:
   - platform: internal_temperature
     icon: mdi:thermometer
@@ -164,31 +574,15 @@ sensor:
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 8
+      sorting_weight: 12
 
-  - platform: wifi_signal
-    name: "ESP WiFi Signal Strength"
-    icon: mdi:wifi
-    id: wifi_strength
-    update_interval: 30s
-    entity_category: diagnostic
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 4
-
-  - platform: copy # Reports the WiFi signal strength in %
-    source_id: wifi_strength
-    name: ESP Wifi signal
-    id: wifi_signal_proc
-    filters:
-      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
-    unit_of_measurement: "%"
-    entity_category: diagnostic
-    device_class: ""
-    icon: mdi:wifi
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 5
+## NCIR thermometer sensor M5stack U028
+#  - platform: mlx90614
+#    ambient:
+#      name: Ambient
+#    object:
+#      name: Object
+#    icon: mdi:thermometer
 
   - name: "Battery Wifi Signal Strength"
     id: battery_wifi_signal_strenght
@@ -204,7 +598,7 @@ sensor:
     accuracy_decimals: 0   
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 6
+      sorting_weight: 7
 
   - platform: copy # Reports the Battery signal strength in %
     source_id: battery_wifi_signal_strenght
@@ -218,7 +612,7 @@ sensor:
     icon: mdi:wifi
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 7
+      sorting_weight: 6
 
   - platform: modbus_controller
     id: inverter_state  # No name, since it's internal
@@ -350,7 +744,7 @@ sensor:
     address: 32104
     value_type: U_WORD
     unit_of_measurement: "%"
-    accuracy_decimals: 1
+    accuracy_decimals: 0
     web_server:
       sorting_group_id: Info
       sorting_weight: 5
@@ -852,450 +1246,44 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 18
 
-## Textsensors diagnostics
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: ESP IP
-      icon: mdi:ip
-      web_server:
-        sorting_group_id: Diagnostic
-        sorting_weight: 1
-    ssid:
-      name: ESP SSID
-      icon: mdi:wifi
-      web_server:
-        sorting_group_id: Diagnostic
-        sorting_weight: 2
-
-  - platform: modbus_controller
-    name: "Device Name"
-    icon: mdi:rename-outline
-    id: device_name
-    modbus_controller_id: mt
-    register_type: holding
-    address: 31000
-    register_count: 10
-    response_size: 20
-    skip_updates: 60 # 5 minutes
+  - platform: wifi_signal
+    name: "ESP WiFi Signal Strength"
+    icon: mdi:wifi
+    id: wifi_strength
+    update_interval: 30s
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 9
+      sorting_weight: 6
 
-  - platform: template
-    name: "Software Version"
-    id: software_version_text
-    icon: mdi:factory
-    update_interval: never  # updates only when sensor triggers
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_strength
+    name: ESP Wifi signal
+    id: wifi_signal_proc
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
     entity_category: diagnostic
+    device_class: ""
+    icon: mdi:wifi
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 10
+      sorting_weight: 5
 
-  - platform: template
-    name: "Firmware Version"
-    id: firmware_version_text
-    icon: mdi:factory
-    update_interval: never  # updates only when sensor triggers
-    entity_category: diagnostic
+  # An internal sensor to check Modbus communication status.
+  - platform: modbus_controller
+    modbus_controller_id: mt
+    name: "Modbus Status"
+    icon: mdi:transit-connection
+    id: modbus_status
+    register_type: holding
+    address: 32104  # Using the Battery SOC register as a reference
+    value_type: U_WORD
+    internal: true # Hides from Home Assistant
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 11
+      sorting_weight: 15
 
-  - platform: template
-    name: "BMS Version"
-    id: bms_version_text
-    icon: mdi:factory
-    update_interval: never  # updates only when sensor triggers
-    entity_category: diagnostic
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 12
-
-  # - name: "SN Code"
-  #   platform: modbus_controller
-  #   modbus_controller_id: mt
-  #   register_type: holding
-  #   address: 31200
-  #   register_count: 10
-  #   response_size: 20
-  #   skip_updates: 60 # 5 minutes
-
-  - platform: template
-    name: "Inverter State"
-    icon: mdi:state-machine
-    lambda: |-
-      switch (int(id(inverter_state).state)) {
-        case 0: return std::string("Sleep");
-        case 1: return std::string("Standby");
-        case 2: return std::string("Charge");
-        case 3: return std::string("Discharge");
-        case 4: return std::string("Fault");
-        case 5: return std::string("Idle");
-        case 6: return std::string("AC bypass");
-        default: return std::string("Unknown");
-      };
-    update_interval: 5s
-    web_server:
-      sorting_group_id: Info
-      sorting_weight: 4
-
-  - platform: version
-    name: ESP Version
-    hide_timestamp: true
-    disabled_by_default: false
-    icon: mdi:new-box
-    entity_category: diagnostic
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 7
-
-  - platform: modbus_controller
-    id: wifi_status
-    name: "Wifi status"
-    modbus_controller_id: mt
-    register_type: holding
-    address: 30300
-    raw_encode: NONE
-    icon: mdi:wifi-alert
-    entity_category: diagnostic
-    skip_updates: 20
-    lambda: |-
-      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
-      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
-      std::string mode_str;
-      switch (int_mode) {
-        case 0:  mode_str = "Disconnected"; break;
-        case 1:  mode_str = "Connected"; break;                                                              
-      }
-      return mode_str;
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 20
-
-  - platform: modbus_controller
-    id: bt_status
-    name: "BT status"
-    modbus_controller_id: mt
-    register_type: holding
-    address: 30301
-    raw_encode: NONE
-    icon: mdi:home-heart
-    entity_category: diagnostic
-    skip_updates: 20
-    lambda: |-
-      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
-      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
-      std::string mode_str;
-      switch (int_mode) {
-        case 0:  mode_str = "Off"; break;
-        case 1:  mode_str = "Active after boot"; break;    
-        case 2:  mode_str = "Connected"; break; 
-        case 3:  mode_str = "Active"; break;                                                           
-      }
-      return mode_str;
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 21
-
-  - platform: modbus_controller
-    id: cloud_status
-    name: "Cloud status"
-    modbus_controller_id: mt
-    register_type: holding
-    address: 30302
-    raw_encode: NONE
-    icon: mdi:home-heart
-    entity_category: diagnostic
-    skip_updates: 20
-    lambda: |-
-      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
-      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
-      std::string mode_str;
-      switch (int_mode) {
-        case 0:  mode_str = "Disconnected"; break;
-        case 1:  mode_str = "Connected"; break;                                                              
-      }
-      return mode_str;
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 22
-
-  - platform: modbus_controller
-    id: power_restriction_discharge
-    name: "Power restriction"
-    modbus_controller_id: mt
-    register_type: holding
-    address: 41010
-    raw_encode: NONE
-    icon: mdi:home-heart
-    entity_category: diagnostic
-    skip_updates: 20
-    lambda: |-
-      uint16_t int_mode = (data[item->offset] << 8) + data[item->offset+1];
-      ESP_LOGD("main","Parsed operation mode int : %d", int_mode);
-      std::string mode_str;
-      switch (int_mode) {
-        case 0:  mode_str = "Off"; break;
-        case 1:  mode_str = "800W limited"; break;                                                              
-      }
-      return mode_str;
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 23
-
-# Binaire sensoren
-binary_sensor:
-## Push button on top of Atom S3 lite
-## Short push = led On or Off
-## Long push = led brightness changes
-  - platform: gpio
-    pin:
-      number: GPIO41
-      inverted: true
-      mode: INPUT_PULLUP
-    name: "Brightness Button"
-    id: brightness_button
-    internal: true
-    icon: mdi:brightness-6
-    on_multi_click:
-      - timing:
-          - ON for at least 1s
-        then:
-          - logger.log: "Long push detected - adjust brightness"
-          - script.execute: adjust_brightness_loop
-
-      - timing:
-          - ON for at most 700ms
-          - OFF for at least 50ms
-        then:
-          - logger.log: "Short push - toggle LED"
-          - light.toggle: status_led
-
-    on_release:
-      then:
-        - script.stop: adjust_brightness_loop
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 13
-
-  - platform: modbus_controller
-    name: "PLL Abnormal Restart"
-    icon: mdi:flash-triangle
-    id: pll_abnormal_restart
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x01
-
-  - platform: modbus_controller
-    name: "Overtemperature Limit"
-    icon: mdi:thermometer-alert
-    id: overtemperature_limit
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x02
-
-  - platform: modbus_controller
-    name: "Low Temperature Limit"
-    icon: mdi:thermometer-alert
-    id: low_overtemperature_limit
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x04
-
-  - platform: modbus_controller
-    name: "Fan Abnormal Warning"
-    icon: mdi:fan-alert
-    id: fan_abnormal_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x08
-
-  - platform: modbus_controller
-    name: "Low Battery SOC Warning"
-    icon: mdi:battery-off-outline
-    id: low_battery_soc_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x16
-
-  - platform: modbus_controller
-    name: "Output Overcurrent Warning"
-    icon: mdi:flash-triangle
-    id: output_overcurrent_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x32
-
-  - platform: modbus_controller
-    name: "Abnormal Line Sequence Detection"
-    icon: mdi:flash-triangle
-    id: abnormal_line_sequence_detection
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x64
-
-  - platform: modbus_controller
-    name: "Wifi Abnormal"
-    icon: mdi:wifi-alert
-    id: wifi_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x01
-
-  - platform: modbus_controller
-    name: "BLE abnormal"
-    icon: mdi:bluetooth-off
-    id: ble_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x02
-
-  - platform: modbus_controller
-    name: "Network abnormal"
-    icon: mdi:network-off
-    id: network_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x04
-
-  - platform: modbus_controller
-    name: "CT connection abnormal"
-    icon: mdi:robot-vacuum-alert
-    id: ct_connection_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x08
-
-  - platform: modbus_controller
-    name: "Grid overvoltage"
-    icon: mdi:flash-triangle
-    id: grid_overvoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x01
-
-  - platform: modbus_controller
-    name: "Grid undervoltage"
-    icon: mdi:flash-triangle-outline
-    id: grid_undervoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x02
-
-  - platform: modbus_controller
-    icon: mdi:flash-triangle
-    name: "Grid overfrequency"
-    id: grid_overfrequency
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x04
-
-  - platform: modbus_controller
-    name: "Grid underfrequency"
-    icon: mdi:flash-triangle
-    id: grid_underfrequency
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x08
-
-  - platform: modbus_controller
-    name: "Grid peak voltage abnormal"
-    icon: mdi:alert-plus
-    id: grid_peak_voltage_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x16
-
-  - platform: modbus_controller
-    name: "Current Dcover"
-    icon: mdi:flash-triangle
-    id: current_dcover
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x32
-
-  - platform: modbus_controller
-    name: "Voltage Dcover"
-    icon: mdi:flash-triangle
-    id: voltage_dcover
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x64
-
-  - platform: modbus_controller
-    name: "BAT overvoltage"
-    icon: mdi:flash-triangle
-    id: bat_overvoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x01
-
-  - platform: modbus_controller
-    name: "BAT undervoltage"
-    icon: mdi:flash-triangle-outline
-    id: bat_undervoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x02
-
-  - platform: modbus_controller
-    name: "BAT overcurrent"
-    icon: mdi:wave-undercurrent
-    id: bat_overcurrent
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x04
-
-  - platform: modbus_controller
-    name: "BAT low SOC"
-    icon: mdi:battery-off-outline
-    id: bat_low_soc
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x08
-
-  - platform: modbus_controller
-    name: "BAT communication failure"
-    icon: mdi:flash-triangle
-    id: bat_communication_failure
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x16
-
-  - platform: modbus_controller
-    name: "BMS protect"
-    icon: mdi:flash-triangle
-    id: bms_protect
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x32
-    
 # Instellingen en modi (Select en Number)
 select:
   - name: "RS485 Control Mode"
@@ -1506,9 +1494,9 @@ light:
           update_interval: 100ms
           min_brightness: 25%
           max_brightness: 100%
-#    web_server:
-#      sorting_group_id: Diagnostic
-#      sorting_weight: 12
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 12
 
 # 🟢 Green on => wifi connected- api connected/ Green blinking => wifi connected - api disconnected
 # 🟣 Purple => wifi disconnected
