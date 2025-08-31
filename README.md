@@ -21,7 +21,7 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 * 22-06-2025 - Eerste versie van de documentatie.
 * 27-07-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.1. OTA webserver en esphome v2025.7.0
 * 09-08-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
-* 23-08-2025 - [atom_s3_lite_rs485_tcp_ip.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip.yaml) naar v1.3 modbus bridge TCP/IP wifi toegevoegd voor in gebruik met evcc.io
+* 23-08-2025 - [atom_s3_lite_rs485_tcp_ip_only.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip_only.yaml) naar v1.3 modbus bridge TCP/IP wifi toegevoegd voor in gebruik met evcc.io
 
 #### V1.3 is nu ook geschikt voor gebruik in [evcc.io](https://docs.evcc.io/en/docs/installation/home-assistant) door modbus rtu naar tcp/ip bridge toevoeging in de esphome code:
 Pas de evcc.yaml aan met deze code (er staat een [fout](https://docs.evcc.io/en/docs/devices/meters#marstek-venus-battery-storage) in, rs485tcpip ipv tcpip)
@@ -41,7 +41,8 @@ meters:
     port: 502 # Port
     capacity: 5.12 # Battery capacity (kWh), Venus-E 5.12 kWh, Venus-C 2.56 kWh (optional)
 ```
-Opm: EVCC is nog niet geheel stabiel te noemen. Power battery heeft uitschieters en Battery SOC gaan soms naar 0%
+Opm: combinatie van modbus rtu en tcp/ip met EVCC is nog niet geheel stabiel te noemen. Evcc Power battery heeft uitschieters en Evcc Battery SOC gaat soms naar 0%
+Advies is om dan enkel de modbus_bridge te gebruiken bij gebruik van evcc.
 
 #### Magneethouder:
 [Magneethouder](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/magnet_holder.jpg) voor m5stack rs485 base:
