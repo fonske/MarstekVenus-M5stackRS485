@@ -26,8 +26,7 @@ esp32:
 external_components:
   - source:
       type: git
-#      url: https://github.com/rosenrot00/esphome_modbus_bridge
-      url: https://github.com/fonske/esphome_modbus_bridge
+      url: https://github.com/rosenrot00/esphome_modbus_bridge
     components: [modbus_bridge]
     refresh: always
 
@@ -442,7 +441,7 @@ sensor:
     accuracy_decimals: 1
     filters:
       - multiply: 0.1
-    skip_updates: 2 # 10 seconds 
+    skip_updates: 2 # 10 seconds
     web_server:
       sorting_group_id: Info
       sorting_weight: 3
@@ -724,8 +723,8 @@ sensor:
       sorting_weight: 21
 
 ## version => BMS V2.15
-  - name: "Marstek Max. Cell Temperature"
-    id: "lilygo_rs485_marstek_max_cell_temperature"
+  - name: "Max. Cell Temperature"
+    id: max_cell_temperature
     icon: mdi:thermometer
     platform: modbus_controller
     modbus_controller_id: mt
@@ -743,8 +742,8 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 22
     
-  - name: "Marstek Min. Cell Temperature"
-    id: "lilygo_rs485_marstek_min_cell_temperature"
+  - name: "Min. Cell Temperature"
+    id: min_cell_temperature
     icon: mdi:thermometer
     platform: modbus_controller
     modbus_controller_id: mt
