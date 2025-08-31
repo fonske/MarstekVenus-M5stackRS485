@@ -26,8 +26,7 @@ esp32:
 external_components:
   - source:
       type: git
-#      url: https://github.com/rosenrot00/esphome_modbus_bridge
-      url: https://github.com/fonske/esphome_modbus_bridge
+      url: https://github.com/rosenrot00/esphome_modbus_bridge
     components: [modbus_bridge]
     refresh: always
 
