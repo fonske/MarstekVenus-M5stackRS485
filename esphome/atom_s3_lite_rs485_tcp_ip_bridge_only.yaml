@@ -130,7 +130,7 @@ modbus_controller:
 ## Configure Debug Switch (Webserver debug window)
 switch:
   - platform: template
-    name: "Modbus Bridge Debug"
+    name: "Modbus TCP/IP Bridge Debug"
     id: modbus_debug_switch
     icon: mdi:file-document-check-outline
     restore_mode: RESTORE_DEFAULT_OFF  # debug disabled by default; persists across reboots
@@ -142,6 +142,7 @@ switch:
       - lambda: |-
           id(mb_bridge).set_debug(false);
           id(modbus_debug_switch).publish_state(false);
+    entity_category: diagnostic
 
 ## Textsensors diagnostics
 text_sensor:
