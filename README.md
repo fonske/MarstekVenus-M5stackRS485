@@ -23,7 +23,7 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 * 09-08-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
 * 23-08-2025 - [atom_s3_lite_rs485_tcp_ip_bridge_only.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip_bridge_only.yaml) naar v1.0 modbus bridge TCP/IP wifi toegevoegd voor in gebruik met evcc.io
 
-#### V1.3 is nu ook geschikt voor gebruik in [evcc.io](https://docs.evcc.io/en/docs/installation/home-assistant) door modbus rtu naar tcp/ip bridge toevoeging in de esphome code:
+#### V1.0 modbus bridge is nu ook geschikt voor gebruik in [evcc.io](https://docs.evcc.io/en/docs/installation/home-assistant) door modbus rtu naar tcp/ip bridge toevoeging in de esphome code:
 Pas de evcc.yaml aan met deze code (er staat een [fout](https://docs.evcc.io/en/docs/devices/meters#marstek-venus-battery-storage) in, rs485tcpip ipv tcpip)
 ```console
 # meter definitions
