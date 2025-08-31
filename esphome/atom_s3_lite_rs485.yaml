@@ -1295,6 +1295,65 @@ binary_sensor:
     register_type: holding
     address: 36101
     bitmask: 0x32
+    
+# Instellingen en modi (Select en Number)
+select:
+  - name: "RS485 Control Mode"
+    icon: mdi:connection
+    platform: modbus_controller
+    modbus_controller_id: mt
+    address: 42000
+    value_type: U_WORD
+    optionsmap:
+      "enable": 21930
+      "disable": 21947
+    skip_updates: 2 # 10 seconds
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 1
+
+  - name: "User Work Mode"
+    icon: mdi:auto-mode
+    platform: modbus_controller
+    modbus_controller_id: mt
+    address: 43000
+    value_type: U_WORD
+    optionsmap:
+      "manual": 0
+      "anti-feed": 1
+      "ai": 2
+    skip_updates: 2 # 10 seconds
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 2
+
+  - name: "Backup Function"
+    icon: mdi:power-plug-battery
+    platform: modbus_controller
+    modbus_controller_id: mt
+    address: 41200
+    value_type: U_WORD
+    optionsmap:
+      "enable": 0
+      "disable": 1
+    skip_updates: 2 # 10 seconds
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 3 
+
+  - name: "Forcible Charge/Discharge" 
+    icon: mdi:arrow-up-down
+    platform: modbus_controller
+    modbus_controller_id: mt
+    address: 42010
+    value_type: U_WORD
+    optionsmap:
+      "stop": 0
+      "charge": 1
+      "discharge": 2
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 4
 
 number:
   - name: "Forcible Charge Power"
