@@ -1116,7 +1116,7 @@ sensor:
       sorting_weight: 21
 
 ## version => BMS V2.15
-  - name: "Max. Cell Temperature"
+  - name: "Max Cell Temperature"
     id: max_cell_temperature
     icon: mdi:thermometer
     platform: modbus_controller
@@ -1135,7 +1135,7 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 22
     
-  - name: "Min. Cell Temperature"
+  - name: "Min Cell Temperature"
     id: min_cell_temperature
     icon: mdi:thermometer
     platform: modbus_controller
