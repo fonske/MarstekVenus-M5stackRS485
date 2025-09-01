@@ -348,7 +348,7 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32104
+    address: 37005 #changed from 32104 (evcc issue)
     value_type: U_WORD
     unit_of_measurement: "%"
     accuracy_decimals: 0
@@ -397,7 +397,7 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32202
+    address: 37004  #changed from 32202 (evcc issue)
     value_type: S_DWORD
     unit_of_measurement: "W"
     device_class: power
