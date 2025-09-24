@@ -37,12 +37,16 @@ meters:
     # RS485 via TCP/IP (Modbus RTU)
     modbus: tcpip
     id: 1
-    host: 192.168.0.216 # Hostname
+    host: 192.168.0.129 # Hostname
     port: 502 # Port
     capacity: 5.12 # Battery capacity (kWh), Venus-E 5.12 kWh, Venus-C 2.56 kWh (optional)
+    minsoc: 11
+    maxsoc: 100
+    maxchargepower: 2500
+    work_mode_normal: 1 #0=manual, 1=anti-feed, 2=trade mode
 ```
-Opm: [combinatie](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip.yaml) van modbus rtu en tcp/ip met EVCC is nog niet geheel stabiel te noemen. Evcc Power battery heeft uitschieters en Evcc Battery SOC gaat soms naar 0%
-Advies is om dan enkel de modbus_bridge_only te gebruiken bij gebruik van evcc.
+
+Advies is om enkel de modbus_bridge_only code te gebruiken bij gebruik van evcc.
 
 #### Magneethouder:
 [Magneethouder](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/photos/magnet_holder.jpg) voor m5stack rs485 base:
