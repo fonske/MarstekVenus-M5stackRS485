@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
-## Version 1.2 - changed scale cell min max temp from BMS V2.15 /see R-1156
+## Version 1.2 - changed scale cell min max temp from BMS V2.13 /see R-1156
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
