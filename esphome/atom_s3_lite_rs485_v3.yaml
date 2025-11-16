@@ -295,221 +295,221 @@ text_sensor:
 
 # Binaire sensoren
 binary_sensor:
-  - platform: modbus_controller
-    name: "PLL Abnormal Restart"
-    icon: mdi:flash-triangle
-    id: pll_abnormal_restart
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x01
+#  - platform: modbus_controller
+#    name: "PLL Abnormal Restart"
+#    icon: mdi:flash-triangle
+#    id: pll_abnormal_restart
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#    bitmask: 0x01
 
-  - platform: modbus_controller
-    name: "Overtemperature Limit"
-    icon: mdi:thermometer-alert
-    id: overtemperature_limit
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x02
+#  - platform: modbus_controller
+#    name: "Overtemperature Limit"
+#    icon: mdi:thermometer-alert
+#    id: overtemperature_limit
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#    bitmask: 0x02
 
-  - platform: modbus_controller
-    name: "Low Temperature Limit"
-    icon: mdi:thermometer-alert
-    id: low_overtemperature_limit
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x04
+#  - platform: modbus_controller
+#    name: "Low Temperature Limit"
+#    icon: mdi:thermometer-alert
+#    id: low_overtemperature_limit
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#    bitmask: 0x04
 
-  - platform: modbus_controller
-    name: "Fan Abnormal Warning"
-    icon: mdi:fan-alert
-    id: fan_abnormal_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x08
+#  - platform: modbus_controller
+#    name: "Fan Abnormal Warning"
+#    icon: mdi:fan-alert
+#    id: fan_abnormal_warning
+#   modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#    bitmask: 0x08
 
-  - platform: modbus_controller
-    name: "Low Battery SOC Warning"
-    icon: mdi:battery-off-outline
-    id: low_battery_soc_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x16
+#  - platform: modbus_controller
+#    name: "Low Battery SOC Warning"
+#    icon: mdi:battery-off-outline
+#    id: low_battery_soc_warning
+#    modbus_controller_id: mt
+#   register_type: holding
+#    address: 36000
+#    bitmask: 0x16
 
-  - platform: modbus_controller
-    name: "Output Overcurrent Warning"
-    icon: mdi:flash-triangle
-    id: output_overcurrent_warning
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x32
+#  - platform: modbus_controller
+#    name: "Output Overcurrent Warning"
+#    icon: mdi:flash-triangle
+#    id: output_overcurrent_warning
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#   bitmask: 0x32
 
-  - platform: modbus_controller
-    name: "Abnormal Line Sequence Detection"
-    icon: mdi:flash-triangle
-    id: abnormal_line_sequence_detection
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36000
-    bitmask: 0x64
+#  - platform: modbus_controller
+#    name: "Abnormal Line Sequence Detection"
+#    icon: mdi:flash-triangle
+#    id: abnormal_line_sequence_detection
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36000
+#    bitmask: 0x64
 
-  - platform: modbus_controller
-    name: "Wifi Abnormal"
-    icon: mdi:wifi-alert
-    id: wifi_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x01
+#  - platform: modbus_controller
+#    name: "Wifi Abnormal"
+#    icon: mdi:wifi-alert
+#    id: wifi_abnormal
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36001
+#   bitmask: 0x01
 
-  - platform: modbus_controller
-    name: "BLE abnormal"
-    icon: mdi:bluetooth-off
-    id: ble_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x02
+#  - platform: modbus_controller
+#    name: "BLE abnormal"
+#    icon: mdi:bluetooth-off
+#    id: ble_abnormal
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36001
+#    bitmask: 0x02
 
-  - platform: modbus_controller
-    name: "Network abnormal"
-    icon: mdi:network-off
-    id: network_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x04
+#  - platform: modbus_controller
+#    name: "Network abnormal"
+#    icon: mdi:network-off
+#    id: network_abnormal
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36001
+#    bitmask: 0x04
 
-  - platform: modbus_controller
-    name: "CT connection abnormal"
-    icon: mdi:robot-vacuum-alert
-    id: ct_connection_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36001
-    bitmask: 0x08
+#  - platform: modbus_controller
+#    name: "CT connection abnormal"
+#    icon: mdi:robot-vacuum-alert
+#    id: ct_connection_abnormal
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36001
+#    bitmask: 0x08
 
-  - platform: modbus_controller
-    name: "Grid overvoltage"
-    icon: mdi:flash-triangle
-    id: grid_overvoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x01
+#  - platform: modbus_controller
+#    name: "Grid overvoltage"
+#    icon: mdi:flash-triangle
+#    id: grid_overvoltage
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x01
 
-  - platform: modbus_controller
-    name: "Grid undervoltage"
-    icon: mdi:flash-triangle-outline
-    id: grid_undervoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x02
+#  - platform: modbus_controller
+#    name: "Grid undervoltage"
+#    icon: mdi:flash-triangle-outline
+#    id: grid_undervoltage
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x02
 
-  - platform: modbus_controller
-    icon: mdi:flash-triangle
-    name: "Grid overfrequency"
-    id: grid_overfrequency
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x04
+#  - platform: modbus_controller
+#    icon: mdi:flash-triangle
+#    name: "Grid overfrequency"
+#    id: grid_overfrequency
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x04
 
-  - platform: modbus_controller
-    name: "Grid underfrequency"
-    icon: mdi:flash-triangle
-    id: grid_underfrequency
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x08
+#  - platform: modbus_controller
+#    name: "Grid underfrequency"
+#    icon: mdi:flash-triangle
+#    id: grid_underfrequency
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x08
 
-  - platform: modbus_controller
-    name: "Grid peak voltage abnormal"
-    icon: mdi:alert-plus
-    id: grid_peak_voltage_abnormal
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x16
+#  - platform: modbus_controller
+#    name: "Grid peak voltage abnormal"
+#    icon: mdi:alert-plus
+#    id: grid_peak_voltage_abnormal
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x16
 
-  - platform: modbus_controller
-    name: "Current Dcover"
-    icon: mdi:flash-triangle
-    id: current_dcover
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x32
+#  - platform: modbus_controller
+#    name: "Current Dcover"
+#    icon: mdi:flash-triangle
+#    id: current_dcover
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#   bitmask: 0x32
 
-  - platform: modbus_controller
-    name: "Voltage Dcover"
-    icon: mdi:flash-triangle
-    id: voltage_dcover
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36100
-    bitmask: 0x64
+#  - platform: modbus_controller
+#    name: "Voltage Dcover"
+#    icon: mdi:flash-triangle
+#    id: voltage_dcover
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36100
+#    bitmask: 0x64
 
-  - platform: modbus_controller
-    name: "BAT overvoltage"
-    icon: mdi:flash-triangle
-    id: bat_overvoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x01
+#  - platform: modbus_controller
+#    name: "BAT overvoltage"
+#    icon: mdi:flash-triangle
+#    id: bat_overvoltage
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x01
 
-  - platform: modbus_controller
-    name: "BAT undervoltage"
-    icon: mdi:flash-triangle-outline
-    id: bat_undervoltage
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x02
+#  - platform: modbus_controller
+#    name: "BAT undervoltage"
+#    icon: mdi:flash-triangle-outline
+#    id: bat_undervoltage
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x02
 
-  - platform: modbus_controller
-    name: "BAT overcurrent"
-    icon: mdi:wave-undercurrent
-    id: bat_overcurrent
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x04
+#  - platform: modbus_controller
+#    name: "BAT overcurrent"
+#    icon: mdi:wave-undercurrent
+#    id: bat_overcurrent
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x04
 
-  - platform: modbus_controller
-    name: "BAT low SOC"
-    icon: mdi:battery-off-outline
-    id: bat_low_soc
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x08
+#  - platform: modbus_controller
+#    name: "BAT low SOC"
+#    icon: mdi:battery-off-outline
+#    id: bat_low_soc
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x08
 
-  - platform: modbus_controller
-    name: "BAT communication failure"
-    icon: mdi:flash-triangle
-    id: bat_communication_failure
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x16
+#  - platform: modbus_controller
+#    name: "BAT communication failure"
+#    icon: mdi:flash-triangle
+#    id: bat_communication_failure
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x16
 
-  - platform: modbus_controller
-    name: "BMS protect"
-    icon: mdi:flash-triangle
-    id: bms_protect
-    modbus_controller_id: mt
-    register_type: holding
-    address: 36101
-    bitmask: 0x32
+#  - platform: modbus_controller
+#    name: "BMS protect"
+#    icon: mdi:flash-triangle
+#    id: bms_protect
+#    modbus_controller_id: mt
+#    register_type: holding
+#    address: 36101
+#    bitmask: 0x32
 
 ## Push button on top of Atom S3 lite
 ## Short push = led On or Off
@@ -1655,6 +1655,40 @@ number:
       sorting_group_id: Control
       sorting_weight: 6
 
+  - name: "Max. Charge Power"
+    icon: mdi:tune-variant
+    mode: box
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 44002
+    value_type: U_WORD
+    unit_of_measurement: "W"
+    min_value: 0
+    max_value: 2500
+    step: 1
+    skip_updates: 2 # 10 seconds
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 7
+
+  - name: "Max. Discharge Power"
+    icon: mdi:tune-variant
+    mode: box
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 44003
+    value_type: U_WORD
+    unit_of_measurement: "W"
+    min_value: 0
+    max_value: 2500
+    step: 1
+    skip_updates: 2 # 10 seconds
+    web_server:
+      sorting_group_id: Control
+      sorting_weight: 8
+
   - name: "Charge To SOC"
     icon: mdi:battery-charging-medium 
     mode: box
@@ -1670,3 +1704,104 @@ number:
     web_server:
       sorting_group_id: Control
       sorting_weight: 9
+
+###############################################################################
+## STATUS LED
+###############################################################################
+## Simple status led for Atom s3 (lite)
+## G35=RGB WS2812C-2020
+light:
+  - platform: esp32_rmt_led_strip
+    id: status_led
+    name: Status led
+    icon: mdi:lightbulb
+    internal: true # Hides from Home Assistant
+    rgb_order: GRB
+    pin: 35
+    num_leds: 4
+    chipset: ws2812
+#    rmt_channel: 0 #only on platform: arduino
+    restore_mode: ALWAYS_OFF
+    entity_category: diagnostic
+    effects:
+      - pulse:
+          name: slow_pulse
+          transition_length: 250ms
+          update_interval: 500ms
+          min_brightness: 10%
+          max_brightness: 50%
+      - pulse:
+          name: fast_pulse
+          transition_length: 100ms
+          update_interval: 100ms
+          min_brightness: 25%
+          max_brightness: 100%
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 12
+
+# 🟢 Green on => wifi connected- api connected/ Green blinking => wifi connected - api disconnected
+# 🟣 Purple => wifi disconnected
+# 🔵 Blue => AP mode
+
+interval:
+  - interval: 10s
+    then:
+      if:
+        condition:
+          wifi.connected:
+        then:
+          if:
+            condition:
+              api.connected:
+            then:
+              - light.turn_on:
+                  id: status_led
+                  brightness: 50%
+                  red: 0
+                  green: 100%
+                  blue: 0
+                  effect: None
+            else:
+              - light.turn_on:
+                  id: status_led
+                  brightness: 50%
+                  red: 0
+                  green: 100%
+                  blue: 0
+                  effect: slow_pulse              
+        else:
+          if:
+            condition:
+              - lambda: 'return id(id_captive_portal).is_active();'
+            then:
+              - light.turn_on:
+                  id: status_led
+                  brightness: 100%
+                  red: 0
+                  green: 0
+                  blue: 100%
+            else:
+              - light.turn_on:
+                  id: status_led
+                  brightness: 100%
+                  red: 100%
+                  green: 0
+                  blue: 0
+
+## knop op de atom ingedrukt houden = veranderen brightness
+script:
+  - id: adjust_brightness_loop
+    mode: restart
+    then:
+      - repeat:
+          count: 1000
+          then:
+            - lambda: |-
+                static float brightness = 0.0;
+                brightness += 0.1;
+                if (brightness > 1.0) brightness = 0.0;
+                auto call = id(status_led).make_call();
+                call.set_brightness(brightness);
+                call.perform();
+            - delay: 750ms
