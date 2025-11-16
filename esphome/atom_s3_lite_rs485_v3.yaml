@@ -1,8 +1,8 @@
 substitutions:
-  name: marstek_m1
-  friendly_name: MT1
+  name: marstek_m1_v3
+  friendly_name: MT1_v3
 
-## Version 1.2 - changed scale cell min max temp from BMS V2.13 /see R-1156
+## Version 1.0
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -161,8 +161,8 @@ text_sensor:
       sorting_weight: 9
 
   - platform: template
-    name: "BMS Version"
-    id: bms_version_text
+    name: "VMS Version"
+    id: vms_version_text
     icon: mdi:factory
     update_interval: never  # updates only when sensor triggers
     entity_category: diagnostic
@@ -170,14 +170,25 @@ text_sensor:
       sorting_group_id: Diagnostic
       sorting_weight: 10
 
-  # - name: "SN Code"
-  #   platform: modbus_controller
-  #   modbus_controller_id: mt
-  #   register_type: holding
-  #   address: 31200
-  #   register_count: 10
-  #   response_size: 20
-  #   skip_updates: 60 # 5 minutes
+  - platform: template
+    name: "EMS Version"
+    id: ems_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 11
+
+  - platform: template
+    name: "BMS Version"
+    id: bms_version_text
+    icon: mdi:factory
+    update_interval: never  # updates only when sensor triggers
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 12
 
   - platform: template
     name: "Inverter State"
@@ -542,7 +553,7 @@ binary_sensor:
         - script.stop: adjust_brightness_loop
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 13
+      sorting_weight: 15
 
 ## Sensoren
 sensor:
@@ -553,7 +564,7 @@ sensor:
     entity_category: diagnostic
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 12
+      sorting_weight: 14
 
   - name: "Battery Wifi Signal Strength"
     id: battery_wifi_signal_strength
@@ -634,11 +645,47 @@ sensor:
             id(firmware_version_text).publish_state(buf);
 
   - platform: modbus_controller
+    id: ems_version
+    icon: mdi:factory
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30200
+    value_type: U_WORD
+    accuracy_decimals: 0
+    skip_updates: 60 # 5 minutes
+    internal: true
+    on_value:
+      then:
+        - lambda: |-
+            int version = (int)x;
+            char buf[5];
+            sprintf(buf, "V%d", version);
+            id(ems_version_text).publish_state(buf);
+
+  - platform: modbus_controller
+    id: vms_version
+    icon: mdi:factory
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30202
+    value_type: U_WORD
+    accuracy_decimals: 0
+    skip_updates: 60 # 5 minutes
+    internal: true
+    on_value:
+      then:
+        - lambda: |-
+            int version = (int)x;
+            char buf[5];
+            sprintf(buf, "V%d", version);
+            id(vms_version_text).publish_state(buf);
+
+  - platform: modbus_controller
     id: bms_version
     icon: mdi:factory
     modbus_controller_id: mt
     register_type: holding
-    address: 31102
+    address: 30204 #31102
     value_type: U_WORD
     accuracy_decimals: 0
     skip_updates: 60 # 5 minutes
@@ -1392,7 +1439,6 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 21
 
-## version => BMS V2.15
   - name: "Max Cell Temperature"
     id: max_cell_temperature
     icon: mdi:thermometer
@@ -1430,43 +1476,6 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 23
 
-## version < BMS V2.15
-#  - name: "Max Cell Temperature"
-#    icon: mdi:thermometer
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 35010
-#    value_type: S_WORD
-#    unit_of_measurement: "°C"
-#    device_class: temperature
-#    state_class: measurement
-#    accuracy_decimals: 1
-#    skip_updates: 60 # 5 minutes
-#    filters:
-#      - multiply: 0.1
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 22
-    
-#  - name: "Min Cell Temperature"
-#    icon: mdi:thermometer
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 35011
-#    value_type: S_WORD
-#    unit_of_measurement: "°C"
-#    device_class: temperature
-#    state_class: measurement
-#    accuracy_decimals: 1
-#    skip_updates: 60 # 5 minutes
-#    filters:
-#      - multiply: 0.1
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 23
-    
   - name: "Battery Charge Voltage Limit"
     platform: modbus_controller
     icon: mdi:sine-wave
@@ -1522,30 +1531,6 @@ sensor:
     web_server:
       sorting_group_id: Info
       sorting_weight: 18
-
-#  - platform: wifi_signal
-#   name: "ESP WiFi Signal Strength"
-#    icon: mdi:wifi
-#    id: wifi_strength
-#    update_interval: 30s
-#    entity_category: diagnostic
-#    web_server:
-#      sorting_group_id: Diagnostic
-#      sorting_weight: 6
-
-#  - platform: copy # Reports the WiFi signal strength in %
-#    source_id: wifi_strength
-#    name: ESP Wifi signal
-#    id: wifi_signal_proc
-#    filters:
-#      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
-#    unit_of_measurement: "%"
-#    entity_category: diagnostic
-#    device_class: ""
-#    icon: mdi:wifi
-#    web_server:
-#      sorting_group_id: Diagnostic
-#      sorting_weight: 5
 
   # An internal sensor to check Modbus communication status.
   - platform: modbus_controller
@@ -1738,7 +1723,7 @@ light:
           max_brightness: 100%
     web_server:
       sorting_group_id: Diagnostic
-      sorting_weight: 12
+      sorting_weight: 13
 
 # 🟢 Green on => wifi connected- api connected/ Green blinking => wifi connected - api disconnected
 # 🟣 Purple => wifi disconnected
