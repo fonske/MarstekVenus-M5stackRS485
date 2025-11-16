@@ -778,14 +778,14 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32201
+    address: 37004 #32201 #V3
     value_type: U_WORD
     unit_of_measurement: "A"
     device_class: current
     state_class: measurement
     accuracy_decimals: 2
     filters:
-      - multiply: 0.01
+      - multiply: 0.004 #0.01
     skip_updates: 2 # 10 seconds
     web_server:
       sorting_group_id: Info
@@ -861,6 +861,7 @@ sensor:
 #      sorting_weight: 28
 
   - name: "Maximum Cell Voltage"
+    id: max_cell_voltage
     platform: modbus_controller
     icon: mdi:sine-wave
     modbus_controller_id: mt
@@ -873,13 +874,13 @@ sensor:
     state_class: measurement
     filters:
       - multiply: 0.001
-    id: marstek_max_cell_voltage
     skip_updates: 10
     web_server:
       sorting_group_id: Info
       sorting_weight: 24
 
   - name: "Minimum Cell Voltage"
+    id: min_cell_voltage
     platform: modbus_controller
     icon: mdi:sine-wave
     modbus_controller_id: mt
@@ -892,7 +893,6 @@ sensor:
     state_class: measurement
     filters:
       - multiply: 0.001
-    id: marstek_min_cell_voltage
     skip_updates: 10
     web_server:
       sorting_group_id: Info
@@ -900,19 +900,325 @@ sensor:
 
   - platform: template
     name: "Cell Voltage Delta"
+    id: cell_voltage_delta
     icon: mdi:sine-wave
     unit_of_measurement: "V"
     device_class: voltage
     accuracy_decimals: 3
     state_class: measurement
     lambda: |-
-      if (isnan(id(marstek_max_cell_voltage).state) || isnan(id(marstek_min_cell_voltage).state)) {
+      if (isnan(id(max_cell_voltage).state) || isnan(id(min_cell_voltage).state)) {
         return NAN;
       }
-      return id(marstek_max_cell_voltage).state - id(marstek_min_cell_voltage).state;
+      return id(max_cell_voltage).state - id(min_cell_voltage).state;
     web_server:
       sorting_group_id: Info
       sorting_weight: 26
+
+  - name: "Cell 1 Voltage"  #V3 only
+    id: cell_1_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34018
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 27
+
+  - name: "Cell 2 Voltage"  #V3 only
+    id: cell_2_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34019
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 28
+
+  - name: "Cell 3 Voltage"  #V3 only
+    id: cell_3_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34020
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 29
+
+  - name: "Cell 4 Voltage"  #V3 only
+    id: cell_4_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34021
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 30
+
+  - name: "Cell 5 Voltage"  #V3 only
+    id: cell_5_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34022
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 31
+
+  - name: "Cell 6 Voltage"  #V3 only
+    id: cell_6_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34023
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 32
+
+  - name: "Cell 7 Voltage"  #V3 only
+    id: cell_7_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34024
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 33
+
+  - name: "Cell 8 Voltage"  #V3 only
+    id: cell_8_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34025
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 34
+
+  - name: "Cell 9 Voltage"  #V3 only
+    id: cell_9_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34026
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 35
+
+  - name: "Cell 10 Voltage"  #V3 only
+    id: cell_10_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34027
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 36
+
+  - name: "Cell 11 Voltage"  #V3 only
+    id: cell_11_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34028
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 37
+
+  - name: "Cell 12 Voltage"  #V3 only
+    id: cell_12_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34029
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 38
+
+  - name: "Cell 13 Voltage"  #V3 only
+    id: cell_13_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34030
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 39
+
+  - name: "Cell 14 Voltage"  #V3 only
+    id: cell_14_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34031
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 40
+
+  - name: "Cell 15 Voltage"  #V3 only
+    id: cell_15_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34032
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 41
+
+
+  - name: "Cell 16 Voltage"  #V3 only
+    id: cell_16_voltage
+    platform: modbus_controller
+    icon: mdi:sine-wave
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34033
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 3
+    state_class: measurement
+    filters:
+      - multiply: 0.001
+    skip_updates: 10
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 42
 
   - name: "Total Charging Energy"
     id: total_charging_energy
