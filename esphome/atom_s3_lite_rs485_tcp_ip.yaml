@@ -724,7 +724,7 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 21
 
-## version => BMS V2.15
+## BMS versions < V2.13 report Cel Temperature * 10
   - name: "Max Cell Temperature"
     id: max_cell_temperature
     icon: mdi:thermometer
@@ -739,7 +739,17 @@ sensor:
     accuracy_decimals: 1
     skip_updates: 60 # 5 minutes
     filters:
-      - multiply: 1.0
+      # - multiply: 1.0
+      - lambda: |-
+          // Extract the numeric part of the BMS version (e.g., "V213" -> 213)
+          std::string version_str = id(bms_version_text).state;
+          unsigned int version_num = 0;
+          if (version_str.length() > 1 && version_str[0] == 'V') {
+            version_num = std::stoul(version_str.substr(1));
+          }
+          // Set multiplier based on version
+          float multiplier = (version_num < 213) ? 0.1f : 1.0f;
+          return x * multiplier;
     web_server:
       sorting_group_id: Info
       sorting_weight: 22
@@ -757,48 +767,21 @@ sensor:
     state_class: measurement
     accuracy_decimals: 1
     filters:
-      - multiply: 1.0
+      # - multiply: 1.0
+      - lambda: |-
+          // Extract the numeric part of the BMS version (e.g., "V213" -> 213)
+          std::string version_str = id(bms_version_text).state;
+          unsigned int version_num = 0;
+          if (version_str.length() > 1 && version_str[0] == 'V') {
+            version_num = std::stoul(version_str.substr(1));
+          }
+          // Set multiplier based on version
+          float multiplier = (version_num < 213) ? 0.1f : 1.0f;
+          return x * multiplier;
     web_server:
       sorting_group_id: Info
       sorting_weight: 23
-
-## version < BMS V2.15
-#  - name: "Max. Cell Temperature"
-#    icon: mdi:thermometer
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 35010
-#    value_type: S_WORD
-#    unit_of_measurement: "°C"
-#    device_class: temperature
-#    state_class: measurement
-#    accuracy_decimals: 1
-#    skip_updates: 60 # 5 minutes
-#    filters:
-#      - multiply: 0.1
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 22
-    
-#  - name: "Min. Cell Temperature"
-#    icon: mdi:thermometer
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 35011
-#    value_type: S_WORD
-#    unit_of_measurement: "°C"
-#    device_class: temperature
-#    state_class: measurement
-#    accuracy_decimals: 1
-#    skip_updates: 60 # 5 minutes
-#    filters:
-#      - multiply: 0.1
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 23
-    
+   
   - name: "Battery Charge Voltage Limit"
     platform: modbus_controller
     icon: mdi:sine-wave
