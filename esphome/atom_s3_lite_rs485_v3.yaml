@@ -704,7 +704,7 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32100
+    address: 30100 #32100 in v12
     value_type: U_WORD
     unit_of_measurement: "V"
     device_class: voltage
@@ -723,14 +723,14 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32101
+    address: 30101 #32101 in v12
     value_type: S_WORD
     unit_of_measurement: "A"
     device_class: current
-    accuracy_decimals: 2
+    accuracy_decimals: 1
     state_class: measurement
     filters:
-      - multiply: 0.01
+      - multiply: 0.1 #0.01
     skip_updates: 60 # 10 seconds
     web_server:
       sorting_group_id: Info
@@ -808,8 +808,8 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32202
-    value_type: S_DWORD
+    address: 30006 #32202 in v12
+    value_type: U_WORD
     unit_of_measurement: "W"
     device_class: power
     state_class: measurement
