@@ -778,14 +778,14 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 37004 #32201 #V3
+    address: 32201 #37004 V3?
     value_type: U_WORD
     unit_of_measurement: "A"
     device_class: current
     state_class: measurement
     accuracy_decimals: 2
     filters:
-      - multiply: 0.004 #0.01
+      - multiply: 0.01 #0.004 V3?
     skip_updates: 2 # 10 seconds
     web_server:
       sorting_group_id: Info
