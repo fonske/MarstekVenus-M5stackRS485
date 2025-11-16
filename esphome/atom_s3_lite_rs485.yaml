@@ -534,49 +534,49 @@ binary_sensor:
     address: 36101
     bitmask: 0x32
 
-## Push button on top of Atom S3 lite
-## Short push = led On or Off
-## Long push = led brightness changes
-  - platform: gpio
-    pin:
-      number: GPIO41
-      inverted: true
-      mode: INPUT_PULLUP
-    name: "Brightness Button"
-    id: brightness_button
-    internal: true
-    icon: mdi:brightness-6
-    on_multi_click:
-      - timing:
-          - ON for at least 1s
+  ## Push button on top of Atom S3 lite
+  ## Short push = led On or Off
+  ## Long push = led brightness changes
+    - platform: gpio
+      pin:
+        number: GPIO41
+        inverted: true
+        mode: INPUT_PULLUP
+      name: "Brightness Button"
+      id: brightness_button
+      internal: true
+      icon: mdi:brightness-6
+      on_multi_click:
+        - timing:
+            - ON for at least 1s
+          then:
+            - logger.log: "Lange druk gedetecteerd - start helderheid aanpassen"
+            - script.execute: adjust_brightness_loop
+
+        - timing:
+            - ON for at most 700ms
+            - OFF for at least 50ms
+          then:
+            - logger.log: "Korte druk - toggle LED"
+            - light.toggle: status_led
+
+      on_release:
         then:
-          - logger.log: "Lange druk gedetecteerd - start helderheid aanpassen"
-          - script.execute: adjust_brightness_loop
+          - script.stop: adjust_brightness_loop
+      web_server:
+        sorting_group_id: Diagnostic
+        sorting_weight: 13
 
-      - timing:
-          - ON for at most 700ms
-          - OFF for at least 50ms
-        then:
-          - logger.log: "Korte druk - toggle LED"
-          - light.toggle: status_led
-
-    on_release:
-      then:
-        - script.stop: adjust_brightness_loop
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 13
-
-## Sensoren
-sensor:
-  - platform: internal_temperature
-    icon: mdi:thermometer
-    name: "Atom temperature"
-    update_interval: 30s
-    entity_category: diagnostic
-    web_server:
-      sorting_group_id: Diagnostic
-      sorting_weight: 12
+  ## Sensoren
+  sensor:
+    - platform: internal_temperature
+      icon: mdi:thermometer
+      name: "Atom temperature"
+      update_interval: 30s
+      entity_category: diagnostic
+      web_server:
+        sorting_group_id: Diagnostic
+        sorting_weight: 12
 
 ## NCIR thermometer sensor M5stack U028
 #  - platform: mlx90614
