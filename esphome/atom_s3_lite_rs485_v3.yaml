@@ -808,8 +808,8 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 30006 #32202 in v12
-    value_type: U_WORD
+    address: 37004 #32202 in v12
+    value_type: S_WORD
     unit_of_measurement: "W"
     device_class: power
     state_class: measurement
