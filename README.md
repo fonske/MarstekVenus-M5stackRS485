@@ -19,8 +19,8 @@ Door deze brug te plaatsten zal de 5V uit de marstek modbus connector direct op 
 
 #### Ontwikkkeling:
 * 22-06-2025 - Eerste versie van de documentatie.
-* 27-07-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.1. OTA webserver en esphome v2025.7.0
-* 09-08-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
+* 27-07-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) Venus E V12 - Naar v1.1. OTA webserver en esphome v2025.7.0
+* 09-08-2025 - [atom_s3_lite_rs485.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485.yaml) Venus E V12 - Naar v1.2. BMS V2.15 - Cell temp min max scale 0.1 -> 1.0
 * 23-08-2025 - [atom_s3_lite_rs485_tcp_ip_bridge_only.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_tcp_ip_bridge_only.yaml) naar v1.0 modbus bridge TCP/IP wifi toegevoegd voor in gebruik met evcc.io
 * 23-11-2025 - [atom_s3_lite_rs485_v3.yaml](https://github.com/fonske/MarstekVenus-M5stackRS485/blob/main/esphome/atom_s3_lite_rs485_v3.yaml) Versie voor Venus E V3 toegevoegd - nog beta versie.
 
