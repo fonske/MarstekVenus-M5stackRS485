@@ -6,7 +6,7 @@ substitutions:
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-  min_version: 2025.7.0
+  min_version: 2025.11.0
   name_add_mac_suffix: false
 
 esp32:
@@ -21,6 +21,10 @@ esp32:
     sdkconfig_options:
       COMPILER_OPTIMIZATION_SIZE: y
       CONFIG_BT_ENABLED: n
+
+psram:
+  mode: octal
+  speed: 80MHz
 
 ## Enable/Disable logging
 logger:
@@ -54,6 +58,8 @@ wifi:
   reboot_timeout: 0s
   fast_connect: true
   power_save_mode: high
+  min_auth_mode: wpa2
+  use_psram: true
 
 ## uncomment if you need a fixed ip address
 #  manual_ip:
@@ -207,7 +213,7 @@ text_sensor:
     update_interval: 5s
     web_server:
       sorting_group_id: Info
-      sorting_weight: 4
+      sorting_weight: 5
 
   - platform: wifi_info
     ip_address:
@@ -698,13 +704,13 @@ sensor:
             sprintf(buf, "V%d", version);
             id(bms_version_text).publish_state(buf);
 
-  - name: "Battery Voltage (Average)"
-    id: battery_voltage_average
+  - name: "Battery Voltage"
+    id: battery_voltage
     icon: mdi:sine-wave
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32100
+    address: 30100 #32100 in V12
     value_type: U_WORD
     unit_of_measurement: "V"
     device_class: voltage
@@ -717,20 +723,20 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 16
 
-  - name: "Battery Current (Average)"
+  - name: "Battery Current"
     icon: mdi:current-dc
-    id: battery_current_average
+    id: battery_current
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32101
+    address: 30101 #32101 in V12
     value_type: S_WORD
     unit_of_measurement: "A"
     device_class: current
     accuracy_decimals: 2
     state_class: measurement
     filters:
-      - multiply: 0.01
+      - multiply: 0.1
     skip_updates: 60 # 10 seconds
     web_server:
       sorting_group_id: Info
@@ -765,7 +771,7 @@ sensor:
     accuracy_decimals: 0
     web_server:
       sorting_group_id: Info
-      sorting_weight: 5
+      sorting_weight: 6
 
   - name: "Battery Total Energy"
     id: battery_total_energy
@@ -782,7 +788,7 @@ sensor:
     skip_updates: 60 # 5 minutes
     web_server:
       sorting_group_id: Info
-      sorting_weight: 7
+      sorting_weight: 8
 
   - platform: template
     name: "Battery Remaining Capacity"
@@ -800,7 +806,7 @@ sensor:
       return NAN;
     web_server:
       sorting_group_id: Info
-      sorting_weight: 6
+      sorting_weight: 7
 
   - name: "AC Power"
     icon: mdi:flash
@@ -808,8 +814,8 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 32202
-    value_type: S_DWORD
+    address: 30006 #according to viper. not 32202 ? to be checked
+    value_type: U_WORD #37004 / S_WORD / crabe919
     unit_of_measurement: "W"
     device_class: power
     state_class: measurement
@@ -856,6 +862,25 @@ sensor:
     web_server:
       sorting_group_id: Info
       sorting_weight: 3
+
+  - name: "AC Frequency"
+    icon: mdi:sine-wave
+    id: ac_frequency
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 32204
+    value_type: U_WORD
+    unit_of_measurement: "Hz"
+    device_class: frequency
+    state_class: measurement
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 2 # 10 seconds 
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 4
 
 #  - name: "AC Offgrid Voltage"
 #   icon: mdi:sine-wave
@@ -1322,7 +1347,7 @@ sensor:
     register_count: 2
     web_server:
       sorting_group_id: Info
-      sorting_weight: 8
+      sorting_weight: 9
 
   - name: "Daily Discharging Energy"
     id: daily_discharging_energy
@@ -1341,7 +1366,7 @@ sensor:
     register_count: 2
     web_server:
       sorting_group_id: Info
-      sorting_weight: 9
+      sorting_weight: 10
 
 # Slow Sensor
   - name: "Monthly Charging Energy"   
@@ -1362,7 +1387,7 @@ sensor:
     skip_updates: 60 # 5 minutes
     web_server:
       sorting_group_id: Info
-      sorting_weight: 10
+      sorting_weight: 11
 
 # Slow Sensor
   - name: "Monthly Discharging Energy"
@@ -1383,7 +1408,7 @@ sensor:
     skip_updates: 60 # 5 minutes
     web_server:
       sorting_group_id: Info
-      sorting_weight: 11
+      sorting_weight: 12
 
   - name: "Internal Temperature"
     icon: mdi:thermometer
