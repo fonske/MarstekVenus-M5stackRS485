@@ -1,6 +1,6 @@
 substitutions:
   name: marstek_m1    ## change name to marstek_m2 or marstek_m3 for more batterys
-  friendly_name: MT1  ##change name to MT2 or MT3 for more batterys
+  friendly_name: MT1  ## change name to MT2 or MT3 for more batterys
 
 ## Version 1.0 - M5stack marstek v3
 esphome:
