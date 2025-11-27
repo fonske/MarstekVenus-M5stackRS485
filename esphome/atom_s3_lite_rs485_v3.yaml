@@ -784,7 +784,7 @@ sensor:
     unit_of_measurement: "kWh"
     accuracy_decimals: 2
     filters:
-      - multiply: 0.001 # Firmware 148: 0.001 / Firmware 147: 0.01
+      - multiply: 0.001 
     skip_updates: 60 # 5 minutes
     web_server:
       sorting_group_id: Info
@@ -814,8 +814,8 @@ sensor:
     platform: modbus_controller
     modbus_controller_id: mt
     register_type: holding
-    address: 30006 #according to viper. not 32202 ? to be checked
-    value_type: U_WORD #37004 / S_WORD / crabe919
+    address: 32202
+    value_type: S_DWORD
     unit_of_measurement: "W"
     device_class: power
     state_class: measurement
@@ -876,61 +876,61 @@ sensor:
     state_class: measurement
     accuracy_decimals: 1
     filters:
-      - multiply: 0.1
+      - multiply: 0.01
     skip_updates: 2 # 10 seconds 
     web_server:
       sorting_group_id: Info
       sorting_weight: 4
 
-#  - name: "AC Offgrid Voltage"
-#   icon: mdi:sine-wave
-#    id: ac_offgrid_voltage
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 32300
-#    value_type: U_WORD
-#    unit_of_measurement: "V"
-#    device_class: voltage
-#    accuracy_decimals: 1
-#    filters:
-#      - multiply: 0.1
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 26
+  - name: "AC Offgrid Voltage"
+   icon: mdi:sine-wave
+    id: ac_offgrid_voltage
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 32300
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    device_class: voltage
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 44
 
-#  - name: "AC Offgrid Current"
-#    icon: mdi:current-ac
-#    id: ac_offgrid_current
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 32301
-#    value_type: U_WORD
-#    unit_of_measurement: "A"
-#    device_class: current
-#    accuracy_decimals: 2
-#    filters:
-#      - multiply: 0.01
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 27
+  - name: "AC Offgrid Current"
+    icon: mdi:current-ac
+    id: ac_offgrid_current
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 32301
+    value_type: U_WORD
+    unit_of_measurement: "A"
+    device_class: current
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 45
 
-#  - name: "AC Offgrid Power"
-#    icon: mdi:flash
-#    id: ac_offgrid_power
-#    platform: modbus_controller
-#    modbus_controller_id: mt
-#    register_type: holding
-#    address: 32302
-#    value_type: S_DWORD
-#    unit_of_measurement: "W"
-#    device_class: power
-#    state_class: measurement
-#    accuracy_decimals: 0
-#    web_server:
-#      sorting_group_id: Info
-#      sorting_weight: 28
+  - name: "AC Offgrid Power"
+    icon: mdi:flash
+    id: ac_offgrid_power
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 32302
+    value_type: S_DWORD
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 0
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 43
 
   - name: "Maximum Cell Voltage"
     id: max_cell_voltage
