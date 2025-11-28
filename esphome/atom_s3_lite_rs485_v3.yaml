@@ -883,7 +883,7 @@ sensor:
       sorting_weight: 4
 
   - name: "AC Offgrid Voltage"
-   icon: mdi:sine-wave
+    icon: mdi:sine-wave
     id: ac_offgrid_voltage
     platform: modbus_controller
     modbus_controller_id: mt
