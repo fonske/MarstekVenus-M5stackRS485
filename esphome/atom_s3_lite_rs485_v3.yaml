@@ -11,8 +11,6 @@ substitutions:
 #   firmware_version
 #   ac_current
 #   ac_offgrid_current
-#   battery_current
-#   battery_power
 # number:
 #   charging_cutoff_capacity
 #   discharging_cutoff_capacity
