@@ -867,7 +867,7 @@ sensor:
     state_class: measurement
     accuracy_decimals: 1
     filters:
-      - multiply: 0.1
+      - multiply: 0.01
     skip_updates: 2 # 10 seconds 
     web_server:
       sorting_group_id: Info
