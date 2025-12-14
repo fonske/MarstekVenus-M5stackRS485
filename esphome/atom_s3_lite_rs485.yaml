@@ -29,16 +29,7 @@ psram:
 ## Enable/Disable logging
 logger:
   logs:
-    modbus_controller.sensor: INFO
-    modbus_controller.output: INFO
-    modbus.number: INFO
-    esp32.preferences: INFO
-    sensor: DEBUG
-    text_sensor: DEBUG
-    button: DEBUG
-    number: DEBUG
     component: ERROR
-    ble_client: DEBUG
   
 ## Enable Home Assistant API
 api:
@@ -132,6 +123,23 @@ modbus_controller:
 debug:
   update_interval: 10s
 
+# Uart logging on/off switch
+switch:
+  - platform: template
+    name: UART Logging
+    id: uart_debug_switch
+    icon: mdi:text
+    restore_mode: ALWAYS_OFF
+    optimistic: true
+    turn_on_action:
+      - logger.set_level: VERBOSE
+    turn_off_action:
+      - logger.set_level: ERROR
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 20
+      
 # Tekstsensoren
 text_sensor:
   ## DEBUG
