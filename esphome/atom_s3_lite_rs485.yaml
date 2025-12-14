@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
-## Version 1.31 - added RTE from lifetime energy counters and uart loggingswitch
+## Version 1.31 - added RTE from lifetime energy counters and uart logging switch
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
