@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1
   friendly_name: MT1
 
-## Version 1.3 - added RTE from lifetime energy counters
+## Version 1.31 - added RTE from lifetime energy counters and uart loggingswitch
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -49,7 +49,6 @@ wifi:
   reboot_timeout: 0s
   fast_connect: true
   power_save_mode: high
-  min_auth_mode: wpa2
   use_psram: true
 
 ## uncomment if you need a fixed ip address
