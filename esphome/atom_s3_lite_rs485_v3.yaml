@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1    ## change name to marstek_m2 or marstek_m3 for more batterys
   friendly_name: MT1  ## change name to MT2 or MT3 for more batterys
 
-## Version 1.01 - M5stack Marstek V3
+## Version 1.1 - M5stack Marstek V3
 #
 # not working:
 # sensor:
@@ -41,16 +41,7 @@ psram:
 ## Enable/Disable logging
 logger:
   logs:
-    modbus_controller.sensor: INFO
-    modbus_controller.output: INFO
-    modbus.number: INFO
-    esp32.preferences: INFO
-    sensor: DEBUG
-    text_sensor: DEBUG
-    button: DEBUG
-    number: DEBUG
     component: ERROR
-    ble_client: DEBUG
   
 ## Enable Home Assistant API
 api:
@@ -70,7 +61,6 @@ wifi:
   reboot_timeout: 0s
   fast_connect: true
   power_save_mode: high
-  min_auth_mode: wpa2
   use_psram: true
 
 ## uncomment if you need a fixed ip address
@@ -141,6 +131,23 @@ modbus_controller:
 #  pin: GPIO4
 #  carrier_duty_percent: 50%
 
+# Uart logging on/off switch
+switch:
+  - platform: template
+    name: UART Logging
+    id: uart_debug_switch
+    icon: mdi:text
+    restore_mode: ALWAYS_OFF
+    optimistic: true
+    turn_on_action:
+      - logger.set_level: VERBOSE
+    turn_off_action:
+      - logger.set_level: ERROR
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 20
+      
 # Tekstsensoren
 text_sensor:
   - name: "Device Name"
