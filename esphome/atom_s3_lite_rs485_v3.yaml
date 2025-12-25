@@ -2,7 +2,7 @@ substitutions:
   name: marstek_m1    ## change name to marstek_m2 or marstek_m3 for more batterys
   friendly_name: MT1  ## change name to MT2 or MT3 for more batterys
 
-## Version 1.1 - M5stack Marstek V3
+## Version 1.11 - M5stack Marstek V3  (see rule numer 20)
 #
 # not working:
 # sensor:
@@ -17,7 +17,7 @@ substitutions:
 
 esphome:
   name: ${name}
-  friendly_name: ${friendly_name}
+  # friendly_name: ${friendly_name}  ### temporarely uncommented because of sensor naming wrong for nodered flow gitcode bob
   min_version: 2025.11.0
   name_add_mac_suffix: false
 
