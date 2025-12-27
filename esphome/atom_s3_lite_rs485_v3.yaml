@@ -473,7 +473,7 @@ sensor:
             sprintf(buf, "V%d", version);
             id(ems_version_text).publish_state(buf);
 
-  - id: vms_version # No name, since it's internal
+  - id: vns_version # No name, since it's internal
     icon: mdi:factory
     platform: modbus_controller
     modbus_controller_id: mt
@@ -489,7 +489,7 @@ sensor:
             int version = (int)x;
             char buf[5];
             sprintf(buf, "V%d", version);
-            id(vms_version_text).publish_state(buf);
+            id(vns_version_text).publish_state(buf);
 
   - id: bms_version # No name, since it's internal
     icon: mdi:factory
