@@ -185,8 +185,8 @@ text_sensor:
 #      sorting_group_id: Diagnostic
 #      sorting_weight: 9
 
-  - name: "VMS Version"
-    id: vms_version_text
+  - name: "VNS Version"
+    id: vns_version_text
     icon: mdi:factory
     platform: template
     update_interval: never  # updates only when sensor triggers
