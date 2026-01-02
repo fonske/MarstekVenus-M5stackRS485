@@ -126,6 +126,12 @@ modbus_controller:
     command_throttle: 20ms
     update_interval: 2s
 
+globals:
+  - id: led_disabled
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+
 ##G4=IR
 #remote_transmitter:
 #  pin: GPIO4
@@ -355,9 +361,23 @@ binary_sensor:
           - ON for at most 700ms
           - OFF for at least 50ms
         then:
-          - logger.log: "Korte druk - toggle LED"
-          - light.toggle: status_led
-
+          - logger.log: "Korte druk - toggle LED"  
+          - if:
+              condition:
+                light.is_on:
+                  id: status_led
+              then:
+                - light.turn_off:
+                    id: status_led
+                - globals.set:
+                    id: led_disabled
+                    value: 'true'
+              else:
+                - light.turn_on:
+                    id: status_led
+                - globals.set:
+                    id: led_disabled
+                    value: 'false'
     on_release:
       then:
         - script.stop: adjust_brightness_loop
@@ -1633,53 +1653,63 @@ light:
       sorting_weight: 13
 
 # 🟢 Green on => wifi connected- api connected/ Green blinking => wifi connected - api disconnected
-# 🟣 Purple => wifi disconnected
+# 🔴 Red => wifi disconnected
 # 🔵 Blue => AP mode
 
 interval:
   - interval: 10s
     then:
-      if:
-        condition:
-          wifi.connected:
-        then:
           if:
             condition:
-              api.connected:
+              wifi.connected:
             then:
-              - light.turn_on:
-                  id: status_led
-                  brightness: 50%
-                  red: 0
-                  green: 100%
-                  blue: 0
-                  effect: None
+              if:
+                condition:
+                  api.connected:
+                then:
+                  if:
+                    condition:
+                      # Check if variable led_disabled is False
+                      # Flase - Turn Status led on
+                      # True - Turn Status led off
+                      - lambda: return !id(led_disabled);
+                    then:  
+                      - light.turn_on:
+                          id: status_led
+                          red: 0
+                          green: 100%
+                          blue: 0
+                          effect: None
+                    else:
+                      - light.turn_off:
+                          id: status_led
+
+                else:
+                  - light.turn_on:
+                      id: status_led
+                      brightness: 100%
+                      red: 0
+                      green: 100%
+                      blue: 0
+                      effect: slow_pulse              
             else:
-              - light.turn_on:
-                  id: status_led
-                  brightness: 50%
-                  red: 0
-                  green: 100%
-                  blue: 0
-                  effect: slow_pulse              
-        else:
-          if:
-            condition:
-              - lambda: 'return id(id_captive_portal).is_active();'
-            then:
-              - light.turn_on:
-                  id: status_led
-                  brightness: 100%
-                  red: 0
-                  green: 0
-                  blue: 100%
-            else:
-              - light.turn_on:
-                  id: status_led
-                  brightness: 100%
-                  red: 100%
-                  green: 0
-                  blue: 0
+              if:
+                condition:
+                  - lambda: 'return id(id_captive_portal).is_active();'
+                then:
+                  - light.turn_on:
+                      id: status_led
+                      brightness: 100%
+                      red: 0
+                      green: 0
+                      blue: 100%
+                else:
+                  - light.turn_on:
+                      id: status_led
+                      brightness: 100%
+                      red: 100%
+                      green: 0
+                      blue: 0
 
 ## knop op de atom ingedrukt houden = veranderen brightness
 script:
