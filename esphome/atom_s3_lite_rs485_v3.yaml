@@ -301,6 +301,7 @@ text_sensor:
         case 1:  mode_str = "Active after boot"; break;    
         case 2:  mode_str = "Connected"; break; 
         case 3:  mode_str = "Active"; break;                                                           
+        case 4:  mode_str = "Disabled"; break;
       }
       return mode_str;
     web_server:
