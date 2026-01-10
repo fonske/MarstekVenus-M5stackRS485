@@ -1,8 +1,8 @@
 substitutions:
-  name: marstek_m1
-  friendly_name: MT1
+  name: marstek_m1_bridge
+  friendly_name: MT1_bridge
 
-## Version 1.0 
+## Version 1.1
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -10,6 +10,13 @@ esphome:
   name_add_mac_suffix: false
   platformio_options:
     board_build.flash_mode: dio
+
+  # Run on boot: publish whether the bridge is enabled
+  on_boot:
+    priority: 600
+    then:
+      - lambda: |-
+          id(mb_bridge_enabled).publish_state(id(mb_bridge).is_enabled());
 
 esp32:
   board: esp32-s3-devkitc-1  ## M5stack Atom S3 lite  
@@ -62,8 +69,8 @@ wifi:
 
 ## uncomment if you need a fixed ip address
 #  manual_ip:
-#    static_ip: 192.168.178.126
-#    gateway: 192.168.178.1
+#    static_ip: 192.168.0.180
+#    gateway: 192.168.0.1
 #    subnet: 255.255.255.0
 
 ## Enable fallback hotspot (captive portal) in case wifi connection fails
@@ -103,10 +110,31 @@ modbus_bridge:
   id: mb_bridge
   uart_id: mod_bus
   tcp_port: 502               # TCP port
-  tcp_poll_interval: 100       # ms between TCP polls
-  tcp_client_timeout: 120000   # ms inactivity until TCP client is disconnected
-  tcp_allowed_clients: 2      # clamped to minimum 1, use with care as it increases memory usage
-  rtu_response_timeout: 60000  # ms, clamped internally to minimum of 10 ms)
+  rtu_response_timeout: 3000     # ms, internally clamped to >=10 ms
+  #tcp_poll_interval: 100       # ms between TCP polls
+  #tcp_client_timeout: 120000   # ms inactivity until TCP client is disconnected
+  #tcp_allowed_clients: 2      # clamped to minimum 1, use with care as it increases memory usage
+  #rtu_response_timeout: 60000  # ms, clamped internally to minimum of 10 ms)
+
+  # Event: triggered whenever number of TCP clients changes
+  on_tcp_clients_changed:
+    then:
+      - lambda: |-
+          id(tcp_clients) = count;
+      - logger.log:
+          format: "TCP clients connected: %d"
+          args: ['count']
+      - sensor.template.publish:
+            id: mb_tcp_clients
+            state: !lambda |-
+              return (int) count;
+
+  # Other available events (use similarly):
+  # on_rtu_send:       # (function_code, address) – triggered for every RTU command sent
+  # on_rtu_receive:    # (function_code, address) – triggered for every valid RTU response
+  # on_rtu_timeout:    # (function_code, address) – triggered for RTU timeouts
+  # on_tcp_started:    # () – triggered when TCP server successfully starts
+  # on_tcp_stopped:    # () – triggered when TCP server stops or IP is lost
 
 modbus:
   - uart_id: mod_bus
@@ -119,7 +147,14 @@ modbus_controller:
     modbus_id: modbus1
     command_throttle: 20ms
     update_interval: 2s
-    
+
+# Global variable to store connected TCP client count
+globals:
+  - id: tcp_clients
+    type: int
+    restore_value: no
+    initial_value: '0'
+
 ## Configure Debug Switch (Webserver debug window)
 switch:
   - platform: template
@@ -136,6 +171,19 @@ switch:
           id(mb_bridge).set_debug(false);
           id(modbus_debug_switch).publish_state(false);
     entity_category: diagnostic
+
+  # Switch: enable/disable the Modbus bridge itself
+  - platform: template
+    id: mb_bridge_enabled
+    name: "Modbus Bridge Enabled"
+    restore_mode: "ALWAYS_ON"
+    optimistic: true
+    turn_on_action:
+      - lambda: |-
+          id(mb_bridge).set_enabled(true);
+    turn_off_action:
+      - lambda: |-
+          id(mb_bridge).set_enabled(false);
 
 debug:
   update_interval: 60s
@@ -177,7 +225,69 @@ text_sensor:
 #      sorting_group_id: Diagnostic
 #      sorting_weight: 6
 
-#sensor:
+sensor:
+  - platform: template
+    name: "TCP Clients"
+    id: mb_tcp_clients
+    accuracy_decimals: 0
+    update_interval: never
+
+  #- platform: template
+  #  name: "MB Frames In"
+  #  accuracy_decimals: 0
+  #  update_interval: 10s
+  #  lambda: |-
+  #    return (float) id(mb_bridge).get_frames_in();
+
+  #- platform: template
+  #  name: "MB Frames Out"
+  #  accuracy_decimals: 0
+  #  update_interval: 10s
+  #  lambda: |-
+  #    return (float) id(mb_bridge).get_frames_out();
+
+  - platform: template
+    name: "TCP Drops PID"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_drops_pid();
+
+  - platform: template
+    name: "Drops LEN"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_drops_len();
+
+  - platform: template
+    name: "RTU Timeouts"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_timeouts();
+
+  - platform: template
+    name: "TCP Clients Total"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_clients_connected_total();
+
+  - platform: template
+    name: "TCP No Slot Events"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_noslot_events();
+
+  - platform: template
+    name: "TCP Preempt Events"
+    accuracy_decimals: 0
+    update_interval: 10s
+    lambda: |-
+      return (int) id(mb_bridge).get_preempt_events();
+
 #  - platform: internal_temperature
 #    icon: mdi:thermometer
 #    name: "Atom temperature"
