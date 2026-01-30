@@ -1,7 +1,7 @@
 # based on Atom S3R with RS485 Base - 5V shortcut wire soldered on back PCB from +5V to +24V
 esphome:
-  name: marstek-m1
-  friendly_name: MT1
+  name: marstek_m1    ## change name to marstek_m2 or marstek_m3 for more batterys
+  friendly_name: marstek_m1  ## change name to marstek_m2 or marstek_m3 for more batterys
   min_version: 2024.11.0
   name_add_mac_suffix: false
 
