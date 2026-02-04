@@ -2,7 +2,7 @@ substitutions:
   name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
   friendly_name: marstek m1  ## change name to marstek m2 or marstek m3 for more batterys
 
-## Version 1.31 - added RTE from lifetime energy counters and uart logging switch
+## Version 1.40 - Changed name to prevent failure in wifi connections
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -1129,6 +1129,32 @@ sensor:
       sorting_group_id: Info
       sorting_weight: 11
 
+  - name: "Monthly Round Trip Efficiency"
+    id: monthly_round_trip_efficiency
+    icon: mdi:percent
+    platform: template
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    state_class: measurement
+    lambda: |-
+      if (!id(monthly_charging_energy).has_state() ||
+          !id(monthly_discharging_energy).has_state()) {
+        return NAN;
+      }
+      float total_charge = id(monthly_charging_energy).state;       // kWh in
+      float total_discharge = id(monthly_discharging_energy).state; // kWh out
+      if (total_charge <= 0.0f) {
+        return NAN;  // avoid divide-by-zero until we have data
+      }
+      float eff = (total_discharge / total_charge) * 100.0f;
+      // Optional: clamp to a sane range to avoid noise
+      if (eff < 0.0f) eff = 0.0f;
+      if (eff > 110.0f) eff = 110.0f;
+      return eff;
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 13
+      
   - name: "Internal Temperature"
     id: internal_mt_temperature
     icon: mdi:thermometer
