@@ -1,6 +1,6 @@
 substitutions:
-  name: marstek_m1    ## change name to marstek_m2 or marstek_m3 for more batterys
-  friendly_name: marstek_m1  ## change name to marstek_m2 or marstek_m3 for more batterys
+  name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
+  friendly_name: marstek m1  ## change name to marstek m2 or marstek m3 for more batterys
 
 ## Version 1.31 - added RTE from lifetime energy counters and uart logging switch
 esphome:
