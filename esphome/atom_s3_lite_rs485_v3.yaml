@@ -2,7 +2,7 @@ substitutions:
   name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
   friendly_name: Marstek m1  ## change name to Marstek m2 or Marstek m3 for more batterys
 
-## Version 1.11 - M5stack Marstek V3  (see rule numer 20)
+## Version 1.20 - Changed name to prevent errors with wifi connection
 #
 # not working:
 # sensor:
