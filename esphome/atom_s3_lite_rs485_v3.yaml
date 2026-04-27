@@ -622,6 +622,7 @@ sensor:
     icon: mdi:battery-arrow-down-outline
     platform: template
     unit_of_measurement: "kWh"
+    state_class: measurement
     device_class: energy_storage
     accuracy_decimals: 2
     update_interval: 300s
