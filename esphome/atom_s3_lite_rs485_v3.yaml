@@ -2,7 +2,7 @@ substitutions:
   name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
   friendly_name: Marstek m1  ## change name to Marstek m2 or Marstek m3 for more batterys
 
-## Version 1.20 - Changed name to prevent errors with wifi connection
+## Version 1.21 - added template sensor state of charge for colouring the icon
 #
 # not working:
 # sensor:
@@ -622,6 +622,7 @@ sensor:
     icon: mdi:battery-arrow-down-outline
     platform: template
     unit_of_measurement: "kWh"
+    device_class: energy_storage
     accuracy_decimals: 2
     update_interval: 300s
     lambda: |-
