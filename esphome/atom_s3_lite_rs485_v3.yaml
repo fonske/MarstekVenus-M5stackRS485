@@ -378,6 +378,29 @@ sensor:
       sorting_group_id: Diagnostic
       sorting_weight: 14
 
+  - platform: wifi_signal
+    name: "ESP WiFi Signal Strength"
+    id: esp_wifi_signal_strength
+    icon: mdi:wifi
+    update_interval: 60s
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 5
+
+  - platform: copy
+    name: "ESP WiFi Signal Percentage"
+    id: esp_wifi_signal_proc
+    source_id: esp_wifi_signal_strength
+    icon: mdi:wifi
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 4
+
   - name: "Battery Wifi Signal Strength"
     id: battery_wifi_signal_strength
     icon: mdi:wifi
