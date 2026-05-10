@@ -2,7 +2,7 @@ substitutions:
   name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
   friendly_name: Marstek m1  ## change name to Marstek m2 or Marstek m3 for more batterys
 
-## Version 1.20 - Changed name to prevent errors with wifi connection
+## Version 1.23 - Added cell balancing register
 #
 # not working:
 # sensor:
@@ -331,6 +331,28 @@ text_sensor:
       sorting_group_id: Diagnostic
       sorting_weight: 22
 
+  - name: "Cells Currently Balancing"
+    id: active_balancing_cells
+    icon: mdi:battery-sync
+    platform: template
+    lambda: |-
+      uint16_t flags = (uint16_t)id(marstek_balancing_flag).state;
+      if (flags == 0) {
+        return std::string("None");
+      }
+      std::string result = "";
+      for (int i = 0; i < 16; i++) {
+        if (flags & (1 << i)) {
+          if (!result.empty()) result += ", ";
+          result += std::to_string(i + 1);
+        }
+      }
+      return result;
+    update_interval: 10s
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 6
+
 # Binaire sensoren
 binary_sensor:
 ## Push button on top of Atom S3 lite
@@ -377,6 +399,7 @@ sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 14
+
 
   - platform: wifi_signal
     name: "ESP WiFi Signal Strength"
@@ -645,6 +668,8 @@ sensor:
     icon: mdi:battery-arrow-down-outline
     platform: template
     unit_of_measurement: "kWh"
+    state_class: measurement
+    device_class: energy_storage
     accuracy_decimals: 2
     update_interval: 300s
     lambda: |-
@@ -1478,6 +1503,21 @@ sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 15
+
+  - name: "Marstek Balancing Flag RAW"
+    id: marstek_balancing_flag
+    icon: mdi:battery-sync
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34009
+    value_type: U_WORD
+    accuracy_decimals: 0
+    state_class: measurement
+    unit_of_measurement: ""
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 43
 
 # Instellingen en modi (Select en Number)
 select:
