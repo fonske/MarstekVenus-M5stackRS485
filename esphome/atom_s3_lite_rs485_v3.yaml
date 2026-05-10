@@ -1,6 +1,6 @@
 substitutions:
-  name: marstek-m3    ## change name to marstek-m2 or marstek-m3 for more batterys
-  friendly_name: Marstek m3  ## change name to Marstek m2 or Marstek m3 for more batterys
+  name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
+  friendly_name: Marstek m1  ## change name to Marstek m2 or Marstek m3 for more batterys
 
 ## Version 1.23 - Added cell balancing register
 #
