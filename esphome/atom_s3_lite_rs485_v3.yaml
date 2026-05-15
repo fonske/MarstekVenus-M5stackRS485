@@ -2,7 +2,7 @@ substitutions:
   name: marstek-m1    ## change name to marstek-m2 or marstek-m3 for more batterys
   friendly_name: Marstek m1  ## change name to Marstek m2 or Marstek m3 for more batterys
 
-## Version 1.23 - Added cell balancing register
+## Version 1.24 - Added cycle counter
 #
 # not working:
 # sensor:
@@ -126,11 +126,6 @@ modbus_controller:
     command_throttle: 20ms
     update_interval: 2s
 
-##G4=IR
-#remote_transmitter:
-#  pin: GPIO4
-#  carrier_duty_percent: 50%
-
 # Uart logging on/off switch
 switch:
   - platform: template
@@ -214,6 +209,36 @@ text_sensor:
     web_server:
       sorting_group_id: Diagnostic
       sorting_weight: 12
+
+  - name: "COM Module version"
+    id: comm_module_version
+    icon: mdi:ticket-confirmation-outline
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30350
+    register_count: 6
+    response_size: 12
+    skip_updates: 60  # very_low scan interval ≈ 5 minutes
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 13  # adjust as needed
+
+  - name: "MAC"
+    id: mac
+    icon: mdi:ethernet
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 30304
+    register_count: 6
+    response_size: 12
+    skip_updates: 60  # very_low scan interval ≈ 5 minutes
+    entity_category: diagnostic
+    web_server:
+      sorting_group_id: Diagnostic
+      sorting_weight: 8  # adjust as needed
 
   - name: "Inverter State"
     id: inverter_state_text
@@ -1230,6 +1255,21 @@ sensor:
     web_server:
       sorting_group_id: Info
       sorting_weight: 14
+
+  - name: "Cycle Counter"
+    id: cycle_counter
+    icon: mdi:chart-bar
+    platform: modbus_controller
+    modbus_controller_id: mt
+    register_type: holding
+    address: 34003
+    value_type: U_WORD
+    accuracy_decimals: 0
+    state_class: measurement
+    unit_of_measurement: ""
+    web_server:
+      sorting_group_id: Info
+      sorting_weight: 15  
 
   - name: "Daily Charging Energy"
     id: daily_charging_energy
