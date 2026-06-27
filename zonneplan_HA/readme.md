@@ -1,6 +1,7 @@
 To see all items on this menu, you need to:
 
 - install Zonneplan integration for Home Assistant through hacs. https://github.com/fsaris/home-assistant-zonneplan-one
+- Activate some hidden sensors under "zonneplan" integration,like sensor.zonneplan_teruglevering_vandaag and sensor.zonneplan_afname_vandaag, by clicking on the greyed out sensor - gearsymbol (instellingen) - activate (inschakelen)
 - install lovelace-mushroom through hacs. https://github.com/piitaya/lovelace-mushroom
 - install lovelace-card-mod through hacs. https://github.com/thomasloven/lovelace-card-mod
 - install plotly-graph-card through hacs. https://github.com/dbuezas/lovelace-plotly-graph-card
