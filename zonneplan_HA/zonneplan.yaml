@@ -1,0 +1,76 @@
+## zonneplan.yaml
+template:
+  - sensor:
+      - name: "ZP Electricity returned today"
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        icon: mdi:lightning-bolt
+        state: >
+          {% if is_number(states('sensor.zonneplan_teruggeleverd_vandaag')) %}
+            {{ states('sensor.zonneplan_teruggeleverd_vandaag') }}
+          {% else %}
+            0
+          {% endif %}
+
+      - name: "ZP Electricity production costs today"
+        unit_of_measurement: EUR
+        device_class: monetary
+        state_class: total
+        icon: mdi:cash
+        state: >
+          {% if is_number(states('sensor.zonneplan_teruglevering_vandaag')) %}
+            {{ states('sensor.zonneplan_teruglevering_vandaag') }}
+          {% else %}
+            0
+          {% endif %}
+
+      - name: "ZP Electricity consumption today"
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        icon: mdi:lightning-bolt
+        state: >
+          {% if is_number(states('sensor.zonneplan_verbruik_vandaag')) %}
+            {{ states('sensor.zonneplan_verbruik_vandaag') }}
+          {% else %}
+            0
+          {% endif %}
+
+      - name: "ZP Electricity delivery costs today"
+        unit_of_measurement: EUR
+        device_class: monetary
+        state_class: total
+        icon: mdi:cash
+        state: >
+          {% if is_number(states('sensor.zonneplan_afname_vandaag')) %}
+            {{ states('sensor.zonneplan_afname_vandaag') }}
+          {% else %}
+            0
+          {% endif %}
+
+      - name: Zonneplan Current Hour Electricity Tariff
+        unique_id: zonneplan_current_hour_electricity_tariff
+        device_class: monetary
+        unit_of_measurement: €/kWh
+        attributes: 
+          metadata: >
+            {{ (state_attr('sensor.zonneplan_current_electricity_tariff', 'forecast')
+                | selectattr('datetime', '==', utcnow().replace(minute=0, second=0).strftime('%Y-%m-%dT%H:%M:%S.000000Z') )
+                | first )
+            }}
+        state: >
+          {{ (state_attr('sensor.zonneplan_current_electricity_tariff', 'forecast')
+            | selectattr('datetime', '==', utcnow().replace(minute=0, second=0).strftime('%Y-%m-%dT%H:%M:%S.000000Z') )
+            | first ).electricity_price | float / 10000000
+          }}
+
+      - name: Zonneplan Current Hour Tariff Group
+        unique_id: zonneplan_current_hour_tariff_group
+        state: >
+          {{ (state_attr('sensor.zonneplan_current_electricity_tariff', 'forecast')
+            | selectattr('datetime', '==', utcnow().replace(minute=0, second=0).strftime('%Y-%m-%dT%H:%M:%S.000000Z') )
+            | first ).tariff_group
+          }}
+          
+
