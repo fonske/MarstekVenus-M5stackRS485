@@ -1,6 +1,6 @@
 substitutions:
-  name: marstek_m1_bridge
-  friendly_name: MT1_bridge
+  name: mt-bridge
+  friendly_name: MT_bridge
 
 ## Version 1.1
 esphome:
