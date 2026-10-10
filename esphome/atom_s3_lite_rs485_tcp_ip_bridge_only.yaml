@@ -8,8 +8,6 @@ esphome:
   friendly_name: ${friendly_name}
   min_version: 2025.7.0
   name_add_mac_suffix: false
-  platformio_options:
-    board_build.flash_mode: dio
 
   # Run on boot: publish whether the bridge is enabled
   on_boot:
@@ -140,12 +138,12 @@ modbus:
   - uart_id: mod_bus
     id: modbus1
     send_wait_time: 20ms
+    turnaround_time: 20ms
 
 modbus_controller:
   - id: mt
     address: 0x1
     modbus_id: modbus1
-    command_throttle: 20ms
     update_interval: 2s
 
 # Global variable to store connected TCP client count
@@ -158,7 +156,7 @@ globals:
 ## Configure Debug Switch (Webserver debug window)
 switch:
   - platform: template
-    name: "Modbus TCP/IP Bridge Debug"
+    name: "Modbus TCP-IP Bridge Debug"
     id: modbus_debug_switch
     icon: mdi:file-document-check-outline
     restore_mode: RESTORE_DEFAULT_OFF  # debug disabled by default; persists across reboots
@@ -254,11 +252,11 @@ sensor:
       return (int) id(mb_bridge).get_drops_pid();
 
   - platform: template
-    name: "Drops LEN"
+    name: "TCP Drops LEN"
     accuracy_decimals: 0
     update_interval: 10s
     lambda: |-
-      return (int) id(mb_bridge).get_drops_len();
+      return (int) id(mb_bridge).get_drops_tcp_len();
 
   - platform: template
     name: "RTU Timeouts"
@@ -333,7 +331,7 @@ light:
     name: Status led
     icon: mdi:lightbulb
     internal: true # Hides from Home Assistant
-    rgb_order: GRB
+    channel_colors: GRB
     pin: 35
     num_leds: 4
     chipset: ws2812
